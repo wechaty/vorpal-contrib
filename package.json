@@ -1,0 +1,62 @@
+{
+  "name": "wechaty-vorpal-contrib",
+  "version": "0.2.0",
+  "description": "Wechaty Chat CLI (Command Line Interface), Powered by Vorpal",
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
+  "scripts": {
+    "clean": "shx rm -fr dist/*",
+    "dist": "npm run clean && tsc",
+    "pack": "npm pack",
+    "lint": "npm run lint:es && npm run lint:ts && npm run lint:md",
+    "lint:md": "markdownlint README.md",
+    "lint:ts": "tsc --noEmit",
+    "example": "ts-node examples/ding-dong-bot.ts",
+    "start": "npm run example",
+    "test": "npm run lint && npm run test:unit",
+    "test:pack": "bash -x scripts/npm-pack-testing.sh",
+    "test:unit": "blue-tape -r ts-node/register \"src/**/*.spec.ts\" \"src/*.spec.ts\" \"tests/*.spec.ts\" \"tests/**/*.spec.ts\"",
+    "lint:es": "eslint --ignore-pattern tests/fixtures/ '{bin,examples,scripts,src,tests}/**/*.ts'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wechaty/wechaty-vorpal-contrib.git"
+  },
+  "keywords": [
+    "Wechaty",
+    "CLI",
+    "ChatOps",
+    "Vorpal",
+    "Contrib"
+  ],
+  "author": "Huan LI <zixia@zixia.net>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/wechaty/wechaty-vorpal-contrib/issues"
+  },
+  "homepage": "https://github.com/wechaty/wechaty-vorpal-contrib#readme",
+  "devDependencies": {
+    "@chatie/eslint-config": "^0.8.1",
+    "@chatie/git-scripts": "^0.6.2",
+    "@chatie/semver": "^0.4.7",
+    "@chatie/tsconfig": "^0.10.1",
+    "@types/vorpal": "^1.12.0",
+    "pkg-jq": "^0.2.4",
+    "shx": "^0.3.2",
+    "tstest": "^0.4.10",
+    "vorpal": "^1.12.0",
+    "wechaty": "^0.40.10"
+  },
+  "dependencies": {
+    "@types/json-stringify-safe": "^5.0.0",
+    "json-stringify-safe": "^5.0.1"
+  },
+  "git": {
+    "scripts": {
+      "pre-push": "npx git-scripts-pre-push"
+    }
+  },
+  "publishConfig": {
+    "tag": "next"
+  }
+}

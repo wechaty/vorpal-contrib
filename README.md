@@ -10,7 +10,20 @@ Wechaty Vorpal Chat CLI (Command Line Interface)
 
 > Image: [Tales of Zestiria](https://shyonaaisha.tumblr.com/post/146096253441/neylakiiroisenkou-tales-of-zestiria-weapons)
 
+## Requirements
+
+1. Node.js v12+
+1. [Wechaty](https://github.com/wechaty/wechaty) v0.40+
+1. [WechatyVorpal](https://github.com/wechaty/wechaty-vorpal) v0.2+
+
 ## Usage
+
+You are welcome to send your Vorpal Extension to our contrib by creating a Pull Request!
+
+| # | Extension | Author | Feature |
+| :--- | :--- | :--- | :--- |
+| 1 | Ding | @huan | Get a reply of `dong` |
+| 2 | Eval | @huan | Run JavaSCript in your Wechaty bot right in the chat window! |
 
 ```ts
 import { Wechaty }        from 'wechaty'

@@ -1,6 +1,6 @@
 # wechaty-vorpal-contrib
 
-[![Wechaty Vorpal Contrib](https://img.shields.io/badge/Wechaty-Vorpal-brightgreen.svg)](https://github.com/wechaty/wechaty-vorpal-contrib)
+[![Wechaty Vorpal Contrib](https://img.shields.io/badge/Wechaty-Vorpal-brightgreen.svg)](https://github.com/wechaty/wechaty-vorpal)
 [![NPM](https://github.com/wechaty/wechaty-vorpal-contrib/workflows/NPM/badge.svg)](https://github.com/wechaty/wechaty-vorpal-contrib/actions?query=workflow%3ANPM)
  [![NPM Version](https://img.shields.io/npm/v/wechaty-vorpal-contrib?color=brightgreen)](https://www.npmjs.com/package/wechaty-vorpal-contrib)
 

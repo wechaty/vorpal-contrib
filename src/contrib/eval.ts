@@ -40,8 +40,10 @@ async function evalAction (
 /**
  * https://stackoverflow.com/a/16608074/1123955
  */
-function isObject (a: any) {
-  return (!!a) && (a.constructor === Object)
-};
+function isObject (obj: any): obj is Object {
+  const type = typeof obj
+  if (!obj) { return false }
+  return type === 'function' || type === 'object'
+}
 
 export { Eval }

@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "@types/json-stringify-safe": "^5.0.0",
+    "cash": "^0.8.0",
     "json-stringify-safe": "^5.0.1"
   },
   "git": {

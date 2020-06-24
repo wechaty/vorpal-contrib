@@ -72,9 +72,11 @@
   ],
   "cSpell.words": [
     "Eval",
+    "POSIX",
     "Zestiria",
     "deduped",
-    "stdins"
+    "stdins",
+    "unalias"
   ],
 
 }

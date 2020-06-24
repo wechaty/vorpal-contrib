@@ -24,14 +24,15 @@ You are welcome to send your Vorpal Extension to our contrib by creating a Pull 
 | :--- | :--- | :--- | :--- |
 | 1 | Ding | @huan | Get a reply of `dong` |
 | 2 | Eval | @huan | Run JavaSCript in your Wechaty bot right in the chat window! |
+| 3 | Cash | @huan | Cross-platform Linux commands in pure ES6 |
 
 ```ts
 import { Wechaty }        from 'wechaty'
 import { WechatyVorpal }  from 'wechaty-vorpal'
-import { Ding }           from 'wechaty-vorpal-contrib'
+import { Eval }           from 'wechaty-vorpal-contrib'
 
 const vorpalExtensionList = [
-  Ding(), // <- Put our vorpal contrib extensions at here.
+  Eval(), // <- Put our vorpal contrib extensions at here.
 ]
 
 const VorpalPlugin = WechatyVorpal({
@@ -57,6 +58,48 @@ import { Eval } from 'wechaty-vorpal-contrib'
 vorpalExtensionList = [ Eval() ]
 ```
 
+### 3 Cash
+
+Cash is a cross-platform implementation of Unix shell commands written in straight ES6. No native compiling and no external dependencies.
+
+```ts
+import { Cash } from 'wechaty-vorpal-contrib'
+vorpalExtensionList = [ Cash() ]
+```
+
+```sh
+$ help
+
+  Commands:
+
+    alias [options] [name...]
+    cat [options] [files...]
+    cd [dir]
+    clear
+    cp [options] [args...]
+    echo [options] [arg...]
+     [options] [files...]
+    export [options] [name...]
+    false
+    kill [options] [process...]
+    ls [options] [paths...]
+     [options] [directory...]
+     [options] [args...]
+    pwd [files...]
+    sort [options] [files...]
+    source [file] [params...]
+    tail [options] [files...]
+    touch [options] <files...>
+    true
+    grep [options] <pattern> [files...]  Grep (POSIX) implementation.
+    rm [options] [files...]
+     [options] [name...]
+```
+
+This extension is powered by [Cash](https://github.com/dthree/cash).
+
+Learn more supported command at <https://github.com/dthree/cash#supported-commands>
+
 ## History
 
 ### v0.2 (Jun 19, 2020)
@@ -65,6 +108,7 @@ Init the first version of Wechaty Vorpal Extensions for official Wechaty ChatOps
 
 1. `Ding` Extension for trigger a `dong` reply
 1. `Eval` Extension for EVAL JavaScript code from the chat window!
+1. `Cash` Extension for Cross-platform Linux commands in pure ES6
 
 ## Contributors
 

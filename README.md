@@ -44,6 +44,18 @@ const wechaty = new Wechaty()
 wechaty.use(VorpalPlugin)
 ```
 
+## Screenshot
+
+![Wechaty Vorpal Eval Extension](docs/images/wechaty-vorpal-eval.png)
+
+## Commands
+
+[![Wechaty Vorpal Contrib](https://img.shields.io/badge/Wechaty%20Vorpal-Contrib-brightgreen.svg)](https://github.com/wechaty/wechaty-vorpal-contrib)
+
+The Wechaty Vorpal Contrib includes the most useful commands from the Wechaty Contributors.
+
+If you believe we should add more command to the contrib, please feel free to submit an proposal by creating an new issue, with your code in the PR!
+
 ### 1 Ding
 
 ```ts

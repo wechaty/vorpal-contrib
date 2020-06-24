@@ -22,8 +22,11 @@ async function evalAction (
   log.verbose('WechatyVorpalContrib', 'Eval("%s")', JSON.stringify(args))
 
   try {
+    const jsCode = args.code.join(' ')
+    log.verbose('WechatyVorpalContrib', 'Eval() jsCode: "%s"', jsCode)
+
     // eslint-disable-next-line no-eval
-    let result = eval(args.code.join(' '))
+    let result = eval(jsCode)
     if (isObject(result) && !Array.isArray(result)) {
       try {
         result = safeStringify(result, null, 2)

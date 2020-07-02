@@ -18,7 +18,9 @@ async function dingAction (
   args: Vorpal.Args
 ): Promise<void> {
   log.verbose('WechatyVorpalContrib', 'Ding() dingAction("%s")', JSON.stringify(args))
-  this.log('dong ' + args.data?.join(' '))
+  if (args.data && Array.isArray(args.data)) {
+    this.log('dong ' + args.data.join(' '))
+  }
 }
 
 export { Ding }

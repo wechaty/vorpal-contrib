@@ -1,10 +1,13 @@
-import Vorpal from 'vorpal'
 import {
   log,
   UrlLink as WechatyUrlLink,
   UrlLinkPayload,
 }                 from 'wechaty'
-import { WechatyVorpalMessages } from 'wechaty-vorpal'
+import {
+  Vorpal,
+  WechatyVorpalMessages,
+}                           from 'wechaty-vorpal'
+
 import {
   Observable,
   Observer,
@@ -48,13 +51,14 @@ async function urlLinkAction (
     urlLink.payload.title = options.title
   }
 
-  const obs = new Observable(function (
+  function subscribe (
     observer: Observer<WechatyVorpalMessages>
   ) {
     observer.next(urlLink)
     observer.complete()
-  })
+  }
 
+  const obs = new Observable(subscribe)
   return obs
 }
 

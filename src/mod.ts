@@ -6,3 +6,6 @@ export {
   Cash,
   CashConfig,
 }                 from './contrib/cash'
+export {
+  UrlLink,
+}                 from './contrib/url_link'

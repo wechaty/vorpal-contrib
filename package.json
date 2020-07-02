@@ -45,7 +45,8 @@
     "shx": "^0.3.2",
     "tstest": "^0.4.10",
     "vorpal": "^1.12.0",
-    "wechaty": "^0.41.14"
+    "wechaty": "^0.41.14",
+    "wechaty-vorpal": "^0.2.10"
   },
   "dependencies": {
     "@types/json-stringify-safe": "^5.0.0",

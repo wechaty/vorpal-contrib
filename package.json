@@ -1,6 +1,6 @@
 {
   "name": "wechaty-vorpal-contrib",
-  "version": "0.2.10",
+  "version": "0.3.0",
   "description": "Wechaty Chat CLI (Command Line Interface), Powered by Vorpal",
   "main": "dist/src/mod.js",
   "typings": "dist/src/mod.d.ts",
@@ -46,7 +46,7 @@
     "tstest": "^0.4.10",
     "vorpal": "^1.12.0",
     "wechaty": "^0.41.14",
-    "wechaty-vorpal": "^0.2.12"
+    "wechaty-vorpal": "^0.3.8"
   },
   "dependencies": {
     "@types/json-stringify-safe": "^5.0.0",

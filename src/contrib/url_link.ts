@@ -5,13 +5,9 @@ import {
 }                 from 'wechaty'
 import {
   Vorpal,
-  WechatyVorpalMessages,
+  CommandInstance,
+  Args,
 }                           from 'wechaty-vorpal'
-
-import {
-  Observable,
-  Observer,
-}                 from 'rxjs'
 
 function UrlLink () {
   log.verbose('WechatyVorpalContrib', 'UrlLink()')
@@ -31,12 +27,14 @@ function UrlLink () {
 type UrlLinkOptions = Partial<UrlLinkPayload>
 
 async function urlLinkAction (
-  this: Vorpal.CommandInstance,
-  args: Vorpal.Args
-): Promise<Observable<WechatyVorpalMessages>> {
+  this: CommandInstance,
+  args: Args
+): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'urlLinkAction("%s")', JSON.stringify(args))
 
-  const url: string = args.url
+  const url: string = Array.isArray(args.url)
+    ? args.url[0]
+    : args.url
   const options: UrlLinkOptions = args.options
 
   const urlLink = await WechatyUrlLink.create(url)
@@ -51,15 +49,8 @@ async function urlLinkAction (
     urlLink.payload.title = options.title
   }
 
-  function subscribe (
-    observer: Observer<WechatyVorpalMessages>
-  ) {
-    observer.next(urlLink)
-    observer.complete()
-  }
-
-  const obs = new Observable(subscribe)
-  return obs
+  this.stdout.next(urlLink)
+  return 0
 }
 
 export { UrlLink }

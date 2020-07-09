@@ -1,4 +1,4 @@
-import Vorpal from 'vorpal'
+import { Vorpal } from 'wechaty-vorpal'
 
 import { Cash }                 from '../src/contrib/cash'
 
@@ -7,9 +7,7 @@ async function main () {
 
   vorpal.use(Cash())
 
-  vorpal
-    .delimiter('>')
-    .show()
+  await vorpal.exec('help')
 }
 
 main().catch(console.error)

@@ -1,4 +1,8 @@
-import Vorpal from 'vorpal'
+import {
+  Args,
+  CommandInstance,
+  Vorpal,
+}                     from 'wechaty-vorpal'
 import { log } from 'wechaty'
 
 function Ding () {
@@ -14,8 +18,8 @@ function Ding () {
 }
 
 async function dingAction (
-  this: Vorpal.CommandInstance,
-  args: Vorpal.Args
+  this: CommandInstance,
+  args: Args
 ): Promise<void> {
   log.verbose('WechatyVorpalContrib', 'Ding() dingAction("%s")', JSON.stringify(args))
   if (args.data && Array.isArray(args.data)) {

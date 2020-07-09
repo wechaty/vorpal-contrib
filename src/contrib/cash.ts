@@ -1,4 +1,6 @@
-import Vorpal from 'vorpal'
+import {
+  Vorpal,
+}                     from 'wechaty-vorpal'
 import { log } from 'wechaty'
 
 /**

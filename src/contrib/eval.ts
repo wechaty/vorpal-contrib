@@ -1,4 +1,8 @@
-import Vorpal         from 'vorpal'
+import {
+  Args,
+  CommandInstance,
+  Vorpal,
+}                     from 'wechaty-vorpal'
 import safeStringify  from 'json-stringify-safe'
 import { log } from 'wechaty'
 
@@ -16,13 +20,13 @@ function Eval () {
 }
 
 async function evalAction (
-  this : Vorpal.CommandInstance,
-  args : Vorpal.Args,
+  this : CommandInstance,
+  args : Args,
 ): Promise<void> {
   log.verbose('WechatyVorpalContrib', 'Eval("%s")', JSON.stringify(args))
 
   try {
-    const jsCode = args.code.join(' ')
+    const jsCode = (args.code as string[]).join(' ')
     log.verbose('WechatyVorpalContrib', 'Eval() jsCode: "%s"', jsCode)
 
     // eslint-disable-next-line no-eval

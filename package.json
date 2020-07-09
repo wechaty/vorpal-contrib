@@ -36,20 +36,18 @@
   },
   "homepage": "https://github.com/wechaty/wechaty-vorpal-contrib#readme",
   "devDependencies": {
-    "@chatie/eslint-config": "^0.8.1",
+    "@chatie/eslint-config": "^0.11.5",
     "@chatie/git-scripts": "^0.6.2",
     "@chatie/semver": "^0.4.7",
     "@chatie/tsconfig": "^0.10.1",
-    "@types/vorpal": "^1.12.0",
+    "@types/json-stringify-safe": "^5.0.0",
     "pkg-jq": "^0.2.4",
     "shx": "^0.3.2",
     "tstest": "^0.4.10",
-    "vorpal": "^1.12.0",
     "wechaty": "^0.41.14",
     "wechaty-vorpal": "^0.3.8"
   },
   "dependencies": {
-    "@types/json-stringify-safe": "^5.0.0",
     "cash": "^0.8.0",
     "json-stringify-safe": "^5.0.1"
   },

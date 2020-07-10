@@ -120,7 +120,11 @@ Learn more supported command at <https://github.com/dthree/cash#supported-comman
 
 ## History
 
-### v0.2 (Jun 19, 2020)
+### v0.4 (July 10, 2020)
+
+Upgrade to [wechaty-vorpal](https://github.com/wechaty/wechaty-vorpal)@0.4 to enhance the Command Action Function:
+
+### v0.2 (June 19, 2020)
 
 Init the first version of Wechaty Vorpal Extensions for official Wechaty ChatOps Commands
 

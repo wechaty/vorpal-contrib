@@ -1,4 +1,7 @@
-export { VERSION } from './version'
+export {
+  WechatyVorpalConfig,
+}                       from './config'
+export { VERSION }      from './version'
 
 export { Ding }   from './contrib/ding'
 export { Eval }   from './contrib/eval'
@@ -15,3 +18,6 @@ export {
 export {
   Announce,
 }                 from './contrib/announce'
+export {
+  MathMaster,
+}                 from './contrib/math_master'

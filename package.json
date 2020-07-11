@@ -44,8 +44,8 @@
     "pkg-jq": "^0.2.4",
     "shx": "^0.3.2",
     "tstest": "^0.4.10",
-    "wechaty": "^0.41.14",
-    "wechaty-vorpal": "^0.4.1"
+    "wechaty": "^0.41.37",
+    "wechaty-vorpal": "^0.4.6"
   },
   "dependencies": {
     "cash": "^0.8.0",

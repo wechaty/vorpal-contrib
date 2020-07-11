@@ -51,6 +51,9 @@
     "cash": "^0.8.0",
     "json-stringify-safe": "^5.0.1"
   },
+  "peerDependencies": {
+    "wechaty-vorpal": "*"
+  },
   "git": {
     "scripts": {
       "pre-push": "npx git-scripts-pre-push"

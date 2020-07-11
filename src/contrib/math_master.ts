@@ -49,7 +49,7 @@ function MathMaster (config: MathMasterConfig = {}) {
     log.verbose('WechatyVorpalContrib', 'MathMasterExtension(vorpal)')
 
     vorpal
-      .command(`${commandName} <url>`, 'play match master game')
+      .command(`${commandName}`, 'play the match master game')
       .action(mathMasterAction as any)
   }
 }
@@ -67,7 +67,7 @@ async function mathMasterAction (
   this.stdout.next(banner)
   await this.wechaty.sleep(1000)
 
-  const playerName = this.prompt("What's your name?")
+  const playerName = await this.prompt("What's your name?")
   await this.wechaty.sleep(1000)
   this.stdout.next(`Hello, ${playerName}! Please try your best to answer math questions!`)
 

@@ -64,8 +64,7 @@ async function mathMasterAction (
 
   this.stdout.next('Welcome to the Wechaty Math Master GAME!')
   const banner = FileBox.fromUrl('https://assets.tvokids.com/prod/s3fs-public/app-images/tileSM_app_mathMaster.jpg')
-  this.stdout.next(banner)
-  await this.wechaty.sleep(1000)
+  await this.message.say(banner)
 
   const playerName = await this.prompt("What's your name?")
   await this.wechaty.sleep(1000)

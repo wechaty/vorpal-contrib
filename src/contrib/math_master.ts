@@ -166,6 +166,9 @@ async function mathMasterAction (
     }
   }
 
+  /**
+   * Main Game Process
+   */
   const game$ = this.stdin.pipe(
     startWith(undefined),
     scan(nextState, initialGameState),

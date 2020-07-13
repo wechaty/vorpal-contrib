@@ -20,4 +20,4 @@ export {
 }                 from './contrib/announce'
 export {
   MathMaster,
-}                 from './contrib/math_master'
+}                 from './contrib/math_master/mod'

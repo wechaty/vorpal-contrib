@@ -1,5 +1,5 @@
-const TIMER_MAX = 3
-const SCORE_MAX = 6
+const TIMER_MAX = 10
+const SCORE_MAX = 17
 
 export {
   TIMER_MAX,

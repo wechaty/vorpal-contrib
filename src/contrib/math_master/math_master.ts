@@ -3,14 +3,15 @@
  *  Huan <zixia@zixia.net>
  */
 import {
-  interval,
+  timer,
+  Subject,
 }                   from 'rxjs'
 import {
   tap,
   scan,
   map,
   switchMap,
-  takeWhile,
+  takeUntil,
   startWith,
 }                   from 'rxjs/operators'
 import {
@@ -22,21 +23,19 @@ import {
   CommandInstance,
   Args,
 }                   from 'wechaty-vorpal'
-import {
-  types,
-}                   from 'wechaty-plugin-contrib'
 
 import {
   WechatyVorpalConfig,
-}                       from '../config'
+}                       from '../../config'
 
-interface State {
-  question : string,
-  answer   : number
-
-  score : number
-  timer : number
-}
+import {
+  TIMER_MAX,
+}                     from './config'
+import {
+  State,
+  nextState,
+  initialGameState,
+}                     from './reducer'
 
 export interface MathMasterConfig extends WechatyVorpalConfig {}
 
@@ -60,109 +59,74 @@ async function mathMasterAction (
   this: CommandInstance,
   args: Args
 ): Promise<number> {
-  log.verbose('WechatyVorpalContrib', 'urlLinkAction("%s")', JSON.stringify(args))
+  log.verbose('WechatyVorpalContrib', 'mathMasterAction("%s")', JSON.stringify(args))
 
-  this.stdout.next('Welcome to the Wechaty Math Master GAME!')
+  const playerName = this.message.talker().name()
+
   const banner = FileBox.fromUrl('https://assets.tvokids.com/prod/s3fs-public/app-images/tileSM_app_mathMaster.jpg')
   await this.message.say(banner)
 
-  const playerName = await this.prompt("What's your name?")
-  await this.wechaty.sleep(1000)
-  this.stdout.next(`Hello, ${playerName}! Please try your best to answer math questions!`)
+  this.stdout.next(`Hello, ${playerName}!`)
+  // this.stdout.next('Welcome to the Wechaty Math Master GAME!')
+  // this.stdout.next("Please try your best to answer math questions, and let's see if you are a real Math Master!")
 
-  await this.wechaty.sleep(1000)
-  this.stdout.next('3 ...')
-  await this.wechaty.sleep(1000)
-  this.stdout.next('2 ...')
-  await this.wechaty.sleep(1000)
-  this.stdout.next('1 ...')
-  await this.wechaty.sleep(1000)
+  // await this.wechaty.sleep(1000)
+  // this.stdout.next('3 ...')
+  // await this.wechaty.sleep(1000)
+  // this.stdout.next('2 ...')
+  // await this.wechaty.sleep(1000)
+  // this.stdout.next('1 ...')
+  // await this.wechaty.sleep(1000)
   this.stdout.next('START!')
+
+  await new Promise(setImmediate)
 
   /**
   * RxJS Game - Inspired by Catch The Dot Game (By adamlubek)
   *  This recipe shows usage of scan operator for state management in simple game
   *  https://www.learnrxjs.io/learn-rxjs/recipes/catch-the-dot-game
   */
-  const TIMER_MAX = 5
 
-  const setTimerText = (text: number) => this.stdout.next(text)
-  const makeInterval = (state: State) => interval(1000).pipe(
+  const countDownTimer = (v: number) => {
+    if (v >= 0 && v < TIMER_MAX /** skip 0 from interval */) {
+      this.stdout.next(v)
+    }
+  }
+
+  /**
+   * How do I make an Observable Interval start immediately without a delay?
+   *  https://stackoverflow.com/a/44166071/1123955
+   *
+   * Huan(202007): We need to emit the state immediately
+   *  or we might get a undefined for our final state.
+   */
+  const makeInterval = (state: State) => timer(0, 1000).pipe(
     map(v => TIMER_MAX - v),
-    tap(setTimerText),
+    tap(countDownTimer),
     map(v => ({
       ...state,
       timer: v,
     })),
   )
-  const generateQuestionAnswer = (score: number) => {
-    const randomNumber = () => {
-      const difficulty = Math.floor(score / 3) + 1
-      return Math.floor(Math.random() * Math.pow(10, difficulty))
-    }
-
-    const x = randomNumber()
-    const y = randomNumber()
-
-    return {
-      answer: x + y,
-      question: `${x} + ${y}`,
-    }
-  }
-  const initialGameState: State = {
-    ...generateQuestionAnswer(0),
-    score : 0,
-    timer : TIMER_MAX,
-  }
 
   /**
    * Check Game Over
    */
-  const isNotGameOver = (state: State) => state.timer >= 0
 
-  const isCorrectAnswer = (state: State) => (msg: types.SayableMessage) => {
-    if (typeof msg === 'string') {
-      return parseInt(msg.trim(), 10) === state.answer
-    }
-    return false
+  const ask = ({ score, question }: State) => {
+    this.stdout.next([
+      `Score: ${score}`,
+      '',
+      `${question} = ?`,
+    ].join('\n'))
   }
 
-  const ask = (state: State) => {
-    const {
-      score,
-      question,
-    }             = state
-
-    const msg = `
-    Score: ${score}
-
-    ${question} = ?
-    `
-
-    this.stdout.next(msg)
-  }
-
-  const nextState = (state: State, value: types.SayableMessage): State => {
-    let newScore = state.score
-    let newTimer = state.timer
-
-    if (value) {
-      const correct = isCorrectAnswer(state)(value)
-
-      if (correct) {
-        newScore++
-        this.stdout.next(`Congratulations! Current score: ${newScore}`)
-      } else {
-        newTimer = -1 // Game Over
-        this.stdout.next(`Wrong! The correct answer is: ${state.answer}, try harder next time!`)
-      }
-    }
-
-    return {
-      ...state,
-      ...generateQuestionAnswer(newScore),
-      score: newScore,
-      timer: newTimer,
+  const gameOver$ = new Subject()
+  const checkGameOver = (state: State) => {
+    // console.info('checkGameOver:', state)
+    if (state.timer < 0) {
+      gameOver$.next()
+      gameOver$.complete()
     }
   }
 
@@ -171,11 +135,13 @@ async function mathMasterAction (
    */
   const game$ = this.stdin.pipe(
     startWith(undefined),
-    scan(nextState, initialGameState),
-    takeWhile(isNotGameOver), // Wrong Answer
+    scan(nextState(this.stdout), initialGameState),
+  ).pipe(
+    tap(checkGameOver), // Wrong Answer will set timer to -1
     tap(ask),
     switchMap(makeInterval),
-    takeWhile(isNotGameOver), // Time Out
+    tap(checkGameOver), // Time Out
+    takeUntil(gameOver$),
   )
 
   try {
@@ -185,7 +151,9 @@ async function mathMasterAction (
 
     ${playerName}, Your final score is: ${state.score}!
     `
+
     this.stdout.next(gameOver)
+    await new Promise(setImmediate)
 
     return 0
 

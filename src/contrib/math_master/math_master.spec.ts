@@ -18,7 +18,6 @@ import {
 
 import { MathMaster } from './math_master'
 import { gameScore }  from './game-score'
-import { SCORE_MAX}   from './config'
 
 test('math_master', async t => {
   /**
@@ -54,18 +53,20 @@ test('math_master', async t => {
     if (typeof text !== 'string')   { return }
 
     const talker = message.talker()
-    console.info(`${talker.payload.name}: ${text}`)
+    // console.info(`${talker.payload.name}: ${text}`)
 
     const MATH_RE = /(\d+) \+ (\d+) = \?/
     const match = text?.match(MATH_RE)
     if (match) {
       const result = parseInt(match[1], 10) + parseInt(match[2], 10)
-      const timeout = match[1].length * 1000
 
-      console.info('timeout:', timeout)
-      setTimeout(() => {
-        player.say(String(result)).to(talker)
-      }, timeout)
+      // const timeout = match[1].length * 1000
+      // console.info('timeout:', timeout)
+      // setTimeout(() => {
+      //   player.say(String(result)).to(talker)
+      // }, timeout)
+
+      setImmediate(() => player.say(String(result)).to(talker))
     }
 
   }
@@ -91,7 +92,7 @@ test('math_master', async t => {
   player.say('math_master').to(bot)
 
   const score = await gameScore(player)
-  t.true(score >= SCORE_MAX, 'should play game and get a robot max score')
+  t.true(score >= 1, 'should play game and get a score')
 
   await new Promise(setImmediate)
   await wechaty.stop()

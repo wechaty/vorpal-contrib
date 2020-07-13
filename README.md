@@ -120,9 +120,9 @@ Learn more supported command at <https://github.com/dthree/cash#supported-comman
 
 ## History
 
-### v0.4 (July 10, 2020)
+### v0.6 (July 10, 2020)
 
-Upgrade to [wechaty-vorpal](https://github.com/wechaty/wechaty-vorpal)@0.4 to enhance the Command Action Function:
+Upgrade to [wechaty-vorpal](https://github.com/wechaty/wechaty-vorpal)@0.6 to enhance the Command Action Functions
 
 ### v0.2 (June 19, 2020)
 

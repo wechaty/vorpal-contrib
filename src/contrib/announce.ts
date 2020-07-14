@@ -3,7 +3,7 @@ import {
 }                 from 'wechaty'
 import {
   Vorpal,
-  CommandInstance,
+  CommandContext,
   Args,
 }                           from 'wechaty-vorpal'
 
@@ -25,7 +25,7 @@ interface AnnounceOptions {
 }
 
 async function announceAction (
-  this: CommandInstance,
+  this: CommandContext,
   args: Args
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'announceAction("%s")', JSON.stringify(args))

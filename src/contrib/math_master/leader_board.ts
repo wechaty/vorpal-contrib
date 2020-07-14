@@ -1,5 +1,5 @@
 import { Contact } from 'wechaty'
-import { CommandInstance } from 'wechaty-vorpal'
+import { CommandContext } from 'wechaty-vorpal'
 
 interface ScoreBoard {
   [id: string]: {
@@ -47,7 +47,7 @@ function update (
 }
 
 async function leaderBoard (
-  context: CommandInstance,
+  context: CommandContext,
   player: Contact,
   score: number,
 ): Promise<string> {

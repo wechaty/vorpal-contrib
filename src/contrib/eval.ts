@@ -1,6 +1,6 @@
 import {
   Args,
-  CommandInstance,
+  CommandContext,
   Vorpal,
 }                     from 'wechaty-vorpal'
 import safeStringify  from 'json-stringify-safe'
@@ -20,7 +20,7 @@ function Eval () {
 }
 
 async function evalAction (
-  this : CommandInstance,
+  this : CommandContext,
   args : Args,
 ): Promise<void> {
   log.verbose('WechatyVorpalContrib', 'Eval("%s")', JSON.stringify(args))

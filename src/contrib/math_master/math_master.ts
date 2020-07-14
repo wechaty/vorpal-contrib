@@ -20,7 +20,7 @@ import {
 }                   from 'wechaty'
 import {
   Vorpal,
-  CommandInstance,
+  CommandContext,
   Args,
 }                   from 'wechaty-vorpal'
 
@@ -57,7 +57,7 @@ function MathMaster (config: MathMasterConfig = {}) {
 // interface MathMasterOptions {}
 
 async function mathMasterAction (
-  this: CommandInstance,
+  this: CommandContext,
   args: Args
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'mathMasterAction("%s")', JSON.stringify(args))

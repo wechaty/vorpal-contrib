@@ -1,7 +1,7 @@
 import {
   Vorpal,
   log,
-  CommandInstance,
+  CommandContext,
   Args,
 }                           from 'wechaty-vorpal'
 
@@ -29,7 +29,7 @@ interface FindOptions {
 }
 
 async function findAction (
-  this: CommandInstance,
+  this: CommandContext,
   args: Args
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'findAction("%s")', JSON.stringify(args))

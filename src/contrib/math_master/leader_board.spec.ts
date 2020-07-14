@@ -5,7 +5,7 @@ import {
 }          from 'tstest'
 
 import { leaderBoard }  from './leader_board'
-import { CommandInstance } from 'wechaty-vorpal'
+import { CommandContext } from 'wechaty-vorpal'
 import { Contact } from 'wechaty'
 
 test('leaderBoard', async t => {
@@ -24,7 +24,7 @@ test('leaderBoard', async t => {
 
     const context = {
       ask: () => COMMENT_LIST[i],
-    } as any as CommandInstance
+    } as any as CommandContext
 
     const result = await leaderBoard(
       context,

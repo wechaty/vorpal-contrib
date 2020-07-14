@@ -1,6 +1,6 @@
 import {
   Args,
-  CommandInstance,
+  CommandContext,
   Vorpal,
 }                     from 'wechaty-vorpal'
 import { log } from 'wechaty'
@@ -18,7 +18,7 @@ function Ding () {
 }
 
 async function dingAction (
-  this: CommandInstance,
+  this: CommandContext,
   args: Args
 ): Promise<void> {
   log.verbose('WechatyVorpalContrib', 'Ding() dingAction("%s")', JSON.stringify(args))

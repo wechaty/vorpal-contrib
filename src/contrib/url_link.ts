@@ -5,7 +5,7 @@ import {
 }                 from 'wechaty'
 import {
   Vorpal,
-  CommandInstance,
+  CommandContext,
   Args,
 }                           from 'wechaty-vorpal'
 
@@ -27,7 +27,7 @@ function UrlLink () {
 type UrlLinkOptions = Partial<UrlLinkPayload>
 
 async function urlLinkAction (
-  this: CommandInstance,
+  this: CommandContext,
   args: Args
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'urlLinkAction("%s")', JSON.stringify(args))

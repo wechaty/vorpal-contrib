@@ -88,15 +88,21 @@ async function whoruAction (
     const osIp = ip.address()
     const netIp = await publicIp.v4()
 
+    const osTotalmemMb = Number(
+      Math.floor(
+        osTotalmem / 1024 / 1024
+      )
+    ).toLocaleString()
+
     reportList.push(
       '',
       [
         `I'm running on ${osHostname} (${osType}/${osArch})`,
-        `with ${Math.floor(osTotalmem / 1024 / 1024)}MB ram,`,
-        `which has been running for ${osUptime}.`,
+        `with ${osTotalmemMb} MB memory,`,
+        `and it has been running for ${osUptime}.`,
       ].join(' '),
       '',
-      `My local ip is ${osIp}, public ip is ${netIp}.`
+      `its internal ip is ${osIp}, external ip is ${netIp}.`
     )
   }
 

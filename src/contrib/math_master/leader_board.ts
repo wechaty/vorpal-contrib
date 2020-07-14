@@ -28,7 +28,8 @@ function reportLeaderBoard (): string {
     .join('\n')
 
   return [
-    'Leader Board',
+    'Math Master Leader Board',
+    '$ math_master --leaderboard',
     '',
     board,
   ].join('\n')

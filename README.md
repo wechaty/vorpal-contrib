@@ -123,7 +123,7 @@ Learn more supported command at <https://github.com/dthree/cash#supported-comman
 
 Play game in WeChat and make you a master of math! (leader board support)
 
-![Wechaty Vorpal Math Master](https://assets.tvokids.com/prod/s3fs-public/app-images/tileSM_app_mathMaster.jpg)
+![Wechaty Vorpal Math Master](docs/images/math-master.png)
 
 ```ts
 import { MathMaster } from 'wechaty-vorpal-contrib'

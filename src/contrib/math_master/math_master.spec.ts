@@ -17,7 +17,6 @@ import {
 }                   from 'wechaty-vorpal'
 
 import { MathMaster } from './math_master'
-import { gameScore }  from './game-score'
 
 test('math_master', async t => {
   /**
@@ -91,9 +90,50 @@ test('math_master', async t => {
   // const messageFuture = new Promise<Message>(resolve => wechaty.once('message', resolve))
   player.say('math_master').to(bot)
 
-  const score = await gameScore(player)
+  const scoreFuture = expectGameScore(player)
+  const boardFuture = expectGameBoard(player)
+
+  const score = await scoreFuture
   t.true(score >= 1, 'should play game and get a score')
+
+  await boardFuture
 
   await new Promise(setImmediate)
   await wechaty.stop()
 })
+
+function expectGameScore (player: mock.ContactMock) {
+  return  new Promise<number>(resolve => {
+    const onMessage = (message: mock.MessageMock) => {
+      if (message.type() !== Message.Type.Text) { return }
+      const text = message.text() || ''
+      if (!/Game Over/i.test(text))             { return }
+
+      const match = text.match(/score is: (\d+)!/i)
+      if (match) {
+        const n = parseInt(match[1], 10)
+        resolve(n)
+      } else {
+        resolve(0)
+      }
+      player.off('message', onMessage)
+    }
+    player.on('message', onMessage)
+  })
+}
+
+function expectGameBoard (player: mock.ContactMock) {
+  return  new Promise<number>(resolve => {
+    const onMessage = (message: mock.MessageMock) => {
+      if (message.type() !== Message.Type.Text) { return }
+      const text = message.text() || ''
+
+      if (/say something/i.test(text)) {
+        player.say('my comment to leader board')
+        resolve()
+        player.off('message', onMessage)
+      }
+    }
+    player.on('message', onMessage)
+  })
+}

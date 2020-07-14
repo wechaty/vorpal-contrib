@@ -35,7 +35,8 @@ import {
   State,
   nextState,
   initialGameState,
-}                     from './reducer'
+}                       from './reducer'
+import { leaderBoard }  from './leader_board'
 
 export interface MathMasterConfig extends WechatyVorpalConfig {}
 
@@ -61,22 +62,18 @@ async function mathMasterAction (
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'mathMasterAction("%s")', JSON.stringify(args))
 
-  const playerName = this.message.talker().name()
+  const player = this.message.talker()
 
   const banner = FileBox.fromUrl('https://assets.tvokids.com/prod/s3fs-public/app-images/tileSM_app_mathMaster.jpg')
   await this.message.say(banner)
 
-  this.stdout.next(`Hello, ${playerName}!`)
-  // this.stdout.next('Welcome to the Wechaty Math Master GAME!')
-  // this.stdout.next("Please try your best to answer math questions, and let's see if you are a real Math Master!")
+  this.stdout.next(`Hello, ${player.name()}!`)
+  await this.wechaty.sleep(1000)
+  this.stdout.next('Welcome to the Wechaty Math Master GAME!')
+  await this.wechaty.sleep(1000)
+  this.stdout.next('Please try your best to answer math questions to become a real Math Master!')
 
-  // await this.wechaty.sleep(1000)
-  // this.stdout.next('3 ...')
-  // await this.wechaty.sleep(1000)
-  // this.stdout.next('2 ...')
-  // await this.wechaty.sleep(1000)
-  // this.stdout.next('1 ...')
-  // await this.wechaty.sleep(1000)
+  await this.wechaty.sleep(1000)
   this.stdout.next('START!')
 
   await new Promise(setImmediate)
@@ -88,8 +85,8 @@ async function mathMasterAction (
   */
 
   const countDownTimer = (v: number) => {
-    if (v >= 0 && v < TIMER_MAX /** skip 0 from interval */) {
-      this.stdout.next(v)
+    if (v >= 0 && v <= 3) {
+      this.stdout.next(`${v} ...`)
     }
   }
 
@@ -136,7 +133,6 @@ async function mathMasterAction (
   const game$ = this.stdin.pipe(
     startWith(undefined),
     scan(nextState(this.stdout), initialGameState),
-  ).pipe(
     tap(checkGameOver), // Wrong Answer will set timer to -1
     tap(ask),
     switchMap(makeInterval),
@@ -149,12 +145,15 @@ async function mathMasterAction (
 
     const gameOver = `Game Over
 
-    ${playerName}, Your final score is: ${state.score}!
+    ${player.name()}, Your final score is: ${state.score}!
     `
 
     this.stdout.next(gameOver)
-    await new Promise(setImmediate)
 
+    const board = await leaderBoard(this, player, state.score)
+    this.stdout.next(board)
+
+    await new Promise(setImmediate)
     return 0
 
   } catch (e) {

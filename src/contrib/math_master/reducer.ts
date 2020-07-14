@@ -4,7 +4,7 @@ import { types } from 'wechaty-plugin-contrib'
 import {
   generateQuestionAnswer,
   isCorrectAnswer,
-}                           from './question-answer'
+}                           from './question_answer'
 import {
   TIMER_MAX,
   SCORE_MAX,

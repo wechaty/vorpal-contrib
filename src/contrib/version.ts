@@ -64,9 +64,9 @@ async function versionAction (
     )
   }
 
-  if (options.devDependencies) {
+  if (options.devDependencies && pkg.devDependencies) {
     this.stdout.next(
-      Object.entries(pkg.packageJson.devDependencies)
+      Object.entries(pkg.devDependencies)
         .map(([name, version]) => `${name}@${version}`)
         .join('\n')
     )

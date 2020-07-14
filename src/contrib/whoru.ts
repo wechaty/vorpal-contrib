@@ -2,6 +2,7 @@ import os from 'os'
 
 import ip from 'ip'
 import publicIp from 'public-ip'
+import readPkgUp  from 'read-pkg-up'
 
 import {
   Vorpal,
@@ -51,6 +52,8 @@ async function whoruAction (
 
   const options = args.options as any as WhoruOptions
 
+  const pkg = (await readPkgUp())?.packageJson
+
   const wechaty = this.wechaty
   const puppet = wechaty.puppet
 
@@ -65,7 +68,9 @@ async function whoruAction (
   const botAge = moment(bornDate).fromNow()
 
   const reportList = [
-    `My name is ${botName}, I borned at ${botAge}.`,
+    `This is ${pkg?.name}@${pkg?.version}, ${pkg?.description}.`,
+    `Now I'm logged in by ${botName} for ${botAge}.`,
+    '',
     `My Wechaty is ${wechatyName}@${wechatyVersion}.`,
     `My puppet is ${puppetName}@${puppetVersion} that extended from wechaty-puppet@${WECHATY_PUPPET_VERSION}.`,
   ]

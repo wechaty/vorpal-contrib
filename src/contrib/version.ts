@@ -24,14 +24,16 @@ function Version (config: VersionConfig = {}) {
     log.verbose('WechatyVorpalContrib', 'VersionExtension(vorpal)')
 
     vorpal
-      .command(commandName, 'show dependency versions')
-      .option('-d --dev', 'including the devDependencies')
+      .command(commandName, 'show version')
+      .option('-d --dependencies', 'show dependencies')
+      .option('-D --devDependencies', 'show devDependencies')
       .action(versionAction)
   }
 }
 
 interface VersionOptions {
-  dev?: boolean
+  dependencies?    : boolean
+  devDependencies? : boolean
 }
 
 async function versionAction (
@@ -42,28 +44,33 @@ async function versionAction (
 
   const options = args.options as any as VersionOptions
 
-  const pkg = await readPkgUp()
+  const pkg = (await readPkgUp())?.packageJson
 
-  if (!pkg || !pkg.packageJson.dependencies) {
-    this.stderr.next('pkg.dependencies not found')
+  if (!pkg) {
+    this.stderr.next('readPkgUp: packageJson not found.')
     return 1
   }
 
-  const dependencyList = Object.entries(pkg.packageJson.dependencies)
-    .map(([name, version]) => `${name}@${version}`)
+  if (!options.dependencies && !options.devDependencies) {
+    this.stdout.next(pkg.version)
+    return 0
+  }
 
-  if (options.dev) {
-    if (!pkg.packageJson.devDependencies) {
-      this.stderr.next('pkg.devDependencies not found')
-      return 1
-    }
-    dependencyList.push(
-      ...Object.entries(pkg.packageJson.devDependencies)
+  if (options.dependencies && pkg.dependencies) {
+    this.stdout.next(
+      Object.entries(pkg.dependencies)
         .map(([name, version]) => `${name}@${version}`)
+        .join('\n')
     )
   }
 
-  this.stdout.next(dependencyList.join('\n'))
+  if (options.devDependencies) {
+    this.stdout.next(
+      Object.entries(pkg.packageJson.devDependencies)
+        .map(([name, version]) => `${name}@${version}`)
+        .join('\n')
+    )
+  }
 
   return 0
 }

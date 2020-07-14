@@ -21,3 +21,9 @@ export {
 export {
   MathMaster,
 }                 from './contrib/math_master/mod'
+export {
+  Whoru,
+}                 from './contrib/whoru'
+export {
+  Version,
+}                 from './contrib/version'

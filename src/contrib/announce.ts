@@ -33,7 +33,7 @@ async function announceAction (
   const announcement: string = args.announcement as string
   const options = args.options as any as AnnounceOptions
 
-  const room = await this.message.wechaty.Room.find({ id: options.room })
+  const room = await this.wechaty.Room.find({ id: options.room })
   if (!room) {
     this.stderr.next('Room not found for id: ' + options.room)
     return 1

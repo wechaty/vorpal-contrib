@@ -128,7 +128,7 @@ function expectGameBoard (player: mock.ContactMock) {
       if (message.type() !== Message.Type.Text) { return }
       const text = message.text() || ''
 
-      if (/say something/i.test(text)) {
+      if (/ say /i.test(text)) {
         player.say('my comment to leader board')
         resolve()
         player.off('message', onMessage)

@@ -4,7 +4,10 @@ import {
   test,
 }          from 'tstest'
 
-import { leaderBoard }  from './leader_board'
+import {
+  registerLeaderBoard,
+  reportLeaderBoard,
+}                         from './leader_board'
 import { CommandContext } from 'wechaty-vorpal'
 import { Contact } from 'wechaty'
 
@@ -26,17 +29,17 @@ test('leaderBoard', async t => {
       ask: () => COMMENT_LIST[i],
     } as any as CommandContext
 
-    const result = await leaderBoard(
+    await registerLeaderBoard(
       context,
       player,
       SCORE_LIST[i]
     )
 
-    resultList[i] = result
+    resultList[i] = await reportLeaderBoard()
   }
 
-  t.equal(resultList[0], '#1 - name1(3) hello', 'should get result 0')
-  t.equal(resultList[1], '#1 - name1(3) hello\n#2 - name2(1) damn', 'should get result 1')
-  t.equal(resultList[2], '#1 - name1(3) hello\n#2 - name3(2) \n#3 - name2(1) damn', 'should get result 2')
-  console.info(resultList[2])
+  t.equal(resultList[0], 'Leader Board\n\n#1 - name1(3) hello', 'should get result 0')
+  t.equal(resultList[1], 'Leader Board\n\n#1 - name1(3) hello\n#2 - name2(1) damn', 'should get result 1')
+  t.equal(resultList[2], 'Leader Board\n\n#1 - name1(3) hello\n#2 - name3(2) \n#3 - name2(1) damn', 'should get result 2')
+  // console.info(resultList[2])
 })

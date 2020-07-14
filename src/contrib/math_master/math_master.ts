@@ -36,7 +36,10 @@ import {
   nextState,
   initialGameState,
 }                       from './reducer'
-import { leaderBoard }  from './leader_board'
+import {
+  registerLeaderBoard,
+  reportLeaderBoard,
+}                       from './leader_board'
 
 export interface MathMasterConfig extends WechatyVorpalConfig {}
 
@@ -50,6 +53,7 @@ function MathMaster (config: MathMasterConfig = {}) {
 
     vorpal
       .command(`${commandName}`, 'play the match master game')
+      .option('-l --leaderboard', 'show leader board')
       .action(mathMasterAction as any)
   }
 }
@@ -61,6 +65,12 @@ async function mathMasterAction (
   args: Args
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'mathMasterAction("%s")', JSON.stringify(args))
+
+  if (args.options.leaderboard) {
+    const board = reportLeaderBoard()
+    this.stdout.next(board)
+    return 0
+  }
 
   const player = this.message.talker()
 
@@ -150,7 +160,9 @@ async function mathMasterAction (
 
     this.stdout.next(gameOver)
 
-    const board = await leaderBoard(this, player, state.score)
+    await registerLeaderBoard(this, player, state.score)
+    const board = reportLeaderBoard()
+
     this.stdout.next(board)
 
     await new Promise(setImmediate)

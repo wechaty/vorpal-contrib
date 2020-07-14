@@ -23,11 +23,15 @@ function reportLeaderBoard (): string {
     .sort(sortScoreBoard)
 
   let ranking = 0
-  const announcement = scoreList
+  const board = scoreList
     .map(score => `#${++ranking} - ${score.name}(${score.score}) ${score.comment || ''}`)
     .join('\n')
 
-  return announcement
+  return [
+    'Leader Board',
+    '',
+    board,
+  ].join('\n')
 }
 
 function update (
@@ -46,23 +50,23 @@ function update (
   }
 }
 
-async function leaderBoard (
+async function registerLeaderBoard (
   context: CommandContext,
   player: Contact,
   score: number,
-): Promise<string> {
+): Promise<void> {
   update(player, score)
 
   let scoreList = Object.values(scoreBoard)
     .map(v => v.score)
   scoreList = [...new Set(scoreList)].sort()
 
-  const ranking = scoreList.indexOf(score)
+  const ranking = 1 + scoreList.indexOf(score)
 
   const comment = await context.ask([
-    'Great score, try harder next time!',
-    `You ranking is ${ranking} after this round of play.`,
-    'Please say something to other players:',
+    `You ranking is #${ranking}`,
+    '',
+    'What do you want to say now?',
   ].join('\n'))
 
   if (typeof comment === 'string' && comment && comment !== '0') {
@@ -71,8 +75,9 @@ async function leaderBoard (
       comment,
     }
   }
-
-  return reportLeaderBoard()
 }
 
-export { leaderBoard }
+export {
+  registerLeaderBoard,
+  reportLeaderBoard,
+}

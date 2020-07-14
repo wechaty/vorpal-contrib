@@ -38,8 +38,8 @@ test('leaderBoard', async t => {
     resultList[i] = await reportLeaderBoard()
   }
 
-  t.equal(resultList[0], 'Leader Board\n\n#1 - name1(3) hello', 'should get result 0')
-  t.equal(resultList[1], 'Leader Board\n\n#1 - name1(3) hello\n#2 - name2(1) damn', 'should get result 1')
-  t.equal(resultList[2], 'Leader Board\n\n#1 - name1(3) hello\n#2 - name3(2) \n#3 - name2(1) damn', 'should get result 2')
+  t.true(resultList[0].includes('name1(3) hello'), 'should get result 0')
+  t.true(resultList[1].includes('name1(3) hello\n#2 - name2(1) damn'), 'should get result 1')
+  t.true(resultList[2].includes('name1(3) hello\n#2 - name3(2) \n#3 - name2(1) damn'), 'should get result 2')
   // console.info(resultList[2])
 })

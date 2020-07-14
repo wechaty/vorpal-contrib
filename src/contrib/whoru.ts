@@ -12,6 +12,7 @@ import {
   log,
 }            from 'wechaty'
 import moment from 'moment'
+import { VERSION as WECHATY_PUPPET_VERSION } from 'wechaty-puppet'
 
 import {
   WechatyVorpalConfig,
@@ -66,7 +67,7 @@ async function whoruAction (
   const reportList = [
     `My name is ${botName}, I borned at ${botAge}.`,
     `My Wechaty is ${wechatyName}@${wechatyVersion}.`,
-    `My puppet is ${puppetName}@${puppetVersion}.`,
+    `My puppet is ${puppetName}@${puppetVersion} that extended from wechaty-puppet@${WECHATY_PUPPET_VERSION}.`,
   ]
 
   if (options.verbose) {
@@ -80,11 +81,13 @@ async function whoruAction (
     const netIp = await publicIp.v4()
 
     reportList.push(
+      '',
       [
-        `I'm running on ${osHostname} (${osType}, ${osArch}),`,
+        `I'm running on ${osHostname} (${osType}, ${osArch})`,
         `with ${Math.floor(osTotalmem / 1024 / 1024)}MB ram,`,
-        `uptime ${osUptime}.`,
-      ].join(''),
+        `and uptime ${osUptime}.`,
+      ].join(' '),
+      '',
       `The local ip is ${osIp}, public ip is ${netIp}.`
     )
   }

@@ -23,7 +23,7 @@ async function dingAction (
 ): Promise<void> {
   log.verbose('WechatyVorpalContrib', 'Ding() dingAction("%s")', JSON.stringify(args))
   if (args.data && Array.isArray(args.data)) {
-    this.log('dong ' + args.data.join(' '))
+    this.log('dong:' + JSON.stringify(args))
   }
 }
 

@@ -68,7 +68,7 @@ async function whoruAction (
   const botAge = moment(bornDate).fromNow()
 
   const reportList = [
-    `This is ${pkg?.name}@${pkg?.version}, ${pkg?.description}.`,
+    `This is ${pkg?.name}@${pkg?.version}, ${pkg?.description}`,
     `Now I'm logged in by ${botName} ${botAge}.`,
     '',
     [
@@ -91,12 +91,12 @@ async function whoruAction (
     reportList.push(
       '',
       [
-        `I'm running on ${osHostname} (${osType}, ${osArch})`,
+        `I'm running on ${osHostname} (${osType}/${osArch})`,
         `with ${Math.floor(osTotalmem / 1024 / 1024)}MB ram,`,
-        `which has running for ${osUptime}.`,
+        `which has been running for ${osUptime}.`,
       ].join(' '),
       '',
-      `The local ip is ${osIp}, public ip is ${netIp}.`
+      `My local ip is ${osIp}, public ip is ${netIp}.`
     )
   }
 

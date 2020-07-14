@@ -25,6 +25,7 @@ You are welcome to send your Vorpal Extension to our contrib by creating a Pull 
 | 1 | Ding | @huan | Get a reply of `dong` |
 | 2 | Eval | @huan | Run JavaSCript in your Wechaty bot right in the chat window! |
 | 3 | Cash | @huan | Cross-platform Linux commands in pure ES6 |
+| 4 | MathMaster | @huan | Text game on WeChat: to become a math master! |
 
 ```ts
 import { Wechaty }        from 'wechaty'
@@ -118,11 +119,23 @@ This extension is powered by [Cash](https://github.com/dthree/cash).
 
 Learn more supported command at <https://github.com/dthree/cash#supported-commands>
 
+### 4 MathMaster
+
+Play game in WeChat and make you a master of math! (leader board support)
+
+![Wechaty Vorpal Math Master](https://assets.tvokids.com/prod/s3fs-public/app-images/tileSM_app_mathMaster.jpg)
+
+```ts
+import { MathMaster } from 'wechaty-vorpal-contrib'
+vorpalExtensionList = [ MathMaster() ]
+```
+
 ## History
 
 ### v0.6 (July 10, 2020)
 
-Upgrade to [wechaty-vorpal](https://github.com/wechaty/wechaty-vorpal)@0.6 to enhance the Command Action Functions
+1. Upgrade to [wechaty-vorpal](https://github.com/wechaty/wechaty-vorpal)@0.6 to enhance the Command Action Functions
+1. `MathMaster` Extension for play game in WeChat!
 
 ### v0.2 (June 19, 2020)
 

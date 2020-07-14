@@ -42,23 +42,23 @@ async function versionAction (
 
   const options = args.options as any as VersionOptions
 
-  const pkg = readPkgUp.sync({ cwd: __dirname })!.packageJson
+  const pkg = await readPkgUp()
 
-  if (!pkg.dependencies) {
+  if (!pkg || !pkg.packageJson.dependencies) {
     this.stderr.next('pkg.dependencies not found')
     return 1
   }
 
-  const dependencyList = Object.entries(pkg.dependencies)
+  const dependencyList = Object.entries(pkg.packageJson.dependencies)
     .map(([name, version]) => `${name}@${version}`)
 
   if (options.dev) {
-    if (!pkg.devDependencies) {
+    if (!pkg.packageJson.devDependencies) {
       this.stderr.next('pkg.devDependencies not found')
       return 1
     }
     dependencyList.push(
-      ...Object.entries(pkg.devDependencies)
+      ...Object.entries(pkg.packageJson.devDependencies)
         .map(([name, version]) => `${name}@${version}`)
     )
   }

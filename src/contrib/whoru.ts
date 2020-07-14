@@ -99,7 +99,7 @@ async function whoruAction (
       [
         `I'm running on ${osHostname} (${osType}/${osArch})`,
         `with ${osTotalmemMb} MB memory,`,
-        `and it has been running for ${osUptime}.`,
+        `and it has been up for ${osUptime}.`,
       ].join(' '),
       '',
       `its internal ip is ${osIp}, external ip is ${netIp}.`

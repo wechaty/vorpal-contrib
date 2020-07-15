@@ -77,11 +77,11 @@ test('math_master', async t => {
         break
 
       case Message.Type.Image:
-        console.info('image message')
+        // console.info('image message')
         break
 
       default:
-        console.info('other message, type: %s[%s]', Message.Type[type], type)
+        // console.info('other message, type: %s[%s]', Message.Type[type], type)
         break
     }
   }

@@ -1,25 +1,42 @@
 import { Message } from 'wechaty'
 
+const TIMER_ID = Symbol('timerId')
+
 const initialState: {
+  [TIMER_ID]?: Record,
   [id: string]: Record
 } = {}
 
-const createTimeCounter = () => {
-  const startTimestamp = Date.now()
-  return () => Date.now() - startTimestamp
-}
+/**
+ * Async reducer: https://stackoverflow.com/a/41243567/1123955
+ */
+const nextState = async (stateFuture: Promise<State>, message?: Message): Promise<State> => {
+  const state = await stateFuture
+  if (!message) {
+    state[TIMER_ID] = {
+      name: 'start timestamp',
+      time: Date.now() / 1000,
+    }
+    return state
+  }
 
-const timeCounter = createTimeCounter()
-
-const nextState = (state: State, message?: Message): State => {
-  if (!message) { return state }
+  const startTimestamp = state[TIMER_ID]?.time ?? 0
 
   const talker = message.talker()
+  const room = message.room()
+
+  let name: string
+  if (room) {
+    name = await room.alias(talker) || talker.name()
+  } else {
+    name = talker.name()
+  }
+
   return {
     ...state,
     [talker.id]: {
-      name: message.talker().name(),
-      time: timeCounter(),
+      name,
+      time: Date.now() / 1000 - startTimestamp,
     },
   }
 }

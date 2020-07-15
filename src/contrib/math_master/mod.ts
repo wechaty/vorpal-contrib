@@ -1,1 +1,4 @@
-export { MathMaster } from './math_master'
+export {
+  MathMaster,
+  MathMasterConfig,
+}                     from './math_master'

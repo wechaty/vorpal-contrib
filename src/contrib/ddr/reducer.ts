@@ -23,13 +23,14 @@ const nextState = async (stateFuture: Promise<State>, message?: Message): Promis
   const startTimestamp = state[TIMER_ID]?.time ?? 0
 
   const talker = message.talker()
-  const room = message.room()
+  const room   = message.room()
 
-  let name: string
+  let name = talker.name()
   if (room) {
-    name = await room.alias(talker) || talker.name()
-  } else {
-    name = talker.name()
+    const alias = await room.alias(talker)
+    if (alias) {
+      name = alias
+    }
   }
 
   return {

@@ -5,20 +5,21 @@
 import {
   timer,
   fromEvent,
-}                   from 'rxjs'
+}               from 'rxjs'
 import {
   scan,
   mergeMap,
   takeUntil,
   startWith,
   filter,
-}                   from 'rxjs/operators'
+}               from 'rxjs/operators'
+
 import {
   log,
-}                   from 'wechaty'
+}                       from 'wechaty'
 import {
-  MessagePayload,
-}                   from 'wechaty-puppet'
+  EventMessagePayload,
+}                       from 'wechaty-puppet'
 import {
   Vorpal,
   CommandContext,
@@ -64,17 +65,17 @@ function Ddr (config: DdrConfig = {}) {
 }
 
 interface DdrOptions {
-  ding: string,
-  dong: string,
-  timeout: number,
-  report?: boolean,
-  reset?: boolean,
+  ding     : string,
+  dong     : string,
+  timeout  : number,
+  summary? : boolean,
+  reset?   : boolean,
 }
 
 const DEFAULT_OPTIONS: DdrOptions = {
   ding: 'ding',
   dong: 'dong',
-  timeout: 10,
+  timeout: 1,
 }
 
 async function ddrAction (
@@ -88,7 +89,7 @@ async function ddrAction (
     ...args.options,
   }
 
-  if (normalizedOptions.report) {
+  if (normalizedOptions.summary) {
     this.stdout.next(reporter.summaryAll())
     return 0
   }
@@ -99,7 +100,7 @@ async function ddrAction (
     return 0
   }
 
-  const message$ = fromEvent<MessagePayload>(this.wechaty.puppet, 'message')
+  const message$ = fromEvent<EventMessagePayload>(this.wechaty.puppet, 'message')
   const timeout$ = timer(normalizedOptions.timeout * 1000)
 
   const ddr$ = message$.pipe(
@@ -124,6 +125,7 @@ async function ddrAction (
 
   } catch (e) {
     log.error('WechatyVorpalContrib', 'Ddr() ddr$.toPromise() rejection %s', e)
+    console.error(e)
     return 1
   }
 

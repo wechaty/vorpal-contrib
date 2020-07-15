@@ -10,17 +10,18 @@ import {
   Room,
 }                   from 'wechaty'
 import {
-  MessagePayload,
+  EventMessagePayload,
 }                   from 'wechaty-puppet'
 
-const toMessage$ = (wechaty: Wechaty) => (payload: MessagePayload) => {
-  const message = wechaty.Message.load(payload.id)
+const toMessage$ = (wechaty: Wechaty) => (payload: EventMessagePayload) => {
+  const message = wechaty.Message.load(payload.messageId)
   return from(
     message.ready()
   ).pipe(
     mapTo(message),
   )
 }
+
 const inRoom = (room: null | Room) => (message: Message): boolean => !!(room && room === message.room())
 const isDong = (dong: string) => (message: Message) => {
   if (message.type() === Message.Type.Text) {

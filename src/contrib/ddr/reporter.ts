@@ -31,7 +31,10 @@ function average (): State {
   const reducer = (acc: State, cur: State) => {
     Object.keys(cur)
       .forEach(id => {
-        acc[id].time += cur[id].time
+        acc[id] = {
+          ...acc[id],
+          time: (acc[id]?.time ?? 0) + cur[id].time,
+        }
         counter[id] = 1 + (counter[id] ?? 0)
       })
     return cur

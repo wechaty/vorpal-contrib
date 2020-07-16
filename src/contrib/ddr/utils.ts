@@ -23,9 +23,9 @@ const toMessage$ = (wechaty: Wechaty) => (payload: EventMessagePayload) => {
 }
 
 const inRoom = (room: null | Room) => (message: Message): boolean => !!(room && room === message.room())
-const isDong = (dong: string) => (message: Message) => {
+const isText = (text: string) => (message: Message) => {
   if (message.type() === Message.Type.Text) {
-    return message.text() === dong
+    return message.text() === text
   }
   return false
 }
@@ -33,5 +33,5 @@ const isDong = (dong: string) => (message: Message) => {
 export {
   toMessage$,
   inRoom,
-  isDong,
+  isText,
 }

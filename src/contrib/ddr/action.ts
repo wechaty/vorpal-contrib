@@ -33,26 +33,15 @@ import {
 import {
   toMessage$,
   inRoom,
-  isDong,
+  isText,
 }                     from './utils'
 import * as reporter  from './reporter'
+import { Monitor }   from './monitor'
+
 import {
-  DEFAULT_TIMEOUT,
-}                     from './config'
-
-interface DdrOptions {
-  ding     : string,
-  dong     : string,
-  timeout  : number,
-  summary? : boolean,
-  reset?   : boolean,
-}
-
-const DEFAULT_OPTIONS: DdrOptions = {
-  ding: 'ding',
-  dong: 'dong',
-  timeout: DEFAULT_TIMEOUT,
-}
+  DEFAULT_OPTIONS,
+  DdrOptions,
+}                     from './ddr'
 
 async function action (
   this: CommandContext,
@@ -76,19 +65,38 @@ async function action (
     return 0
   }
 
+  if (normalizedOptions.monitor) {
+    const monitor = new Monitor(normalizedOptions, this.message)
+    if (monitor.busy()) {
+      this.stderr.next('DDR monitor has already existed.')
+      return 1
+    }
+
+    monitor.start()
+    this.stdout.next('DDR monitor started.')
+    return 0
+  }
+
+  if (normalizedOptions.unmonitor) {
+    const monitor = new Monitor(normalizedOptions, this.message)
+    if (!monitor.busy()) {
+      this.stderr.next('DDR monitor has not existed.')
+      return 1
+    }
+    monitor.stop()
+    return 0
+  }
+
   const message$ = fromEvent<EventMessagePayload>(this.wechaty.puppet, 'message')
   const timeout$ = timer(normalizedOptions.timeout * 1000)
 
   const ddr$ = message$.pipe(
     mergeMap(toMessage$(this.wechaty)),
     filter(inRoom(this.message.room())),
-    filter(isDong(normalizedOptions.dong)),
+    filter(isText(normalizedOptions.dong)),
     startWith(undefined),
-    /**
-     * Async reducer: https://stackoverflow.com/a/41243567/1123955
-     */
     scan(nextState, Promise.resolve(initialState)),
-    mergeMap(v => from(v)),
+    mergeMap(v => from(v)), // await promise for `v`
     takeUntil(timeout$),
   )
 

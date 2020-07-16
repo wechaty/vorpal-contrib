@@ -21,6 +21,22 @@ import { action }     from './action'
 
 export interface DdrConfig extends WechatyVorpalConfig {}
 
+export interface DdrOptions {
+  ding       : string,
+  dong       : string,
+  timeout    : number,
+  summary?   : boolean,
+  reset?     : boolean,
+  monitor?   : boolean,
+  unmonitor? : boolean,
+}
+
+const DEFAULT_OPTIONS: DdrOptions = {
+  ding: 'ding',
+  dong: 'dong',
+  timeout: DEFAULT_TIMEOUT,
+}
+
 function Ddr (config: DdrConfig = {}) {
   log.verbose('WechatyVorpalContrib', 'Ddr(%s)', JSON.stringify(config))
 
@@ -34,10 +50,15 @@ function Ddr (config: DdrConfig = {}) {
       .option('-d --ding <ding>', 'Define the message for sending. (default `ding`)')
       .option('-D --dong <dong>', 'Define the expected message for receiving. (default `dong`)')
       .option('-t --timeout <timeout>', `Define the maximum seconds for waiting a dong after ding. (default ${DEFAULT_TIMEOUT}s)`)
+      .option('-m --monitor', 'Monitor the DDR in the background')
+      .option('-u --unmonitor', 'Unmonitor the DDR in the background')
       .option('-s --summary', 'Summary the DDR status')
-      .option('-r --reset', 'Reset')
+      .option('-r --reset', 'Reset all DDR data that received')
       .action(action)
   }
 }
 
-export { Ddr }
+export {
+  DEFAULT_OPTIONS,
+  Ddr,
+}

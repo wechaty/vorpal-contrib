@@ -118,15 +118,19 @@ class Monitor {
      */
     if (typeof interval !== 'boolean') {
       storeItem.interval = interval
-      const match = interval.match(/^(\d+)(\w+)$/)
+      const match = interval.match(/^(\d+)(\w*)$/)
 
       let intervalSeconds = 60 * 60  // default 1 hour1
 
       if (match) {
-        intervalSeconds = moment.duration(
-          parseInt(match[1], 10),
-          match[2] as any,
-        ).asSeconds()
+        if (match[2]) {           // '60s'
+          intervalSeconds = moment.duration(
+            parseInt(match[1], 10),
+            match[2] as any,
+          ).asSeconds()
+        } else {                  // '60'
+          intervalSeconds = parseInt(match[1], 10)
+        }
       }
       log.verbose('Monitor', 'start() interval resolved to %s seconds', interval)
 

@@ -1,26 +1,35 @@
 import { Message } from 'wechaty'
 
-const TIMER_ID = Symbol('timerId')
-
 const initialState: {
-  [TIMER_ID]?: Record,
-  [id: string]: Record
-} = {}
+  meta: {
+    time: number
+  },
+  payload: {
+    [id: string]: Record
+  }
+} = {
+  meta: {
+    time: 0,
+  },
+  payload: {},
+}
 
 /**
  * Async reducer: https://stackoverflow.com/a/41243567/1123955
  */
 const nextState = async (stateFuture: Promise<State>, message?: Message): Promise<State> => {
+  // Resolve the promised returned from the previous reducer
   const state = await stateFuture
-  if (!message) {
-    state[TIMER_ID] = {
-      name: 'start timestamp',
-      time: Date.now() / 1000,
-    }
-    return state
-  }
 
-  const startTimestamp = state[TIMER_ID]?.time ?? 0
+  // Init the state for the first time (received a `undefined` value)
+  if (!message) {
+    return {
+      meta: {
+        time: Date.now(),
+      },
+      payload: {},
+    }
+  }
 
   const talker = message.talker()
   const room   = message.room()
@@ -35,15 +44,20 @@ const nextState = async (stateFuture: Promise<State>, message?: Message): Promis
 
   return {
     ...state,
-    [talker.id]: {
-      name,
-      time: Date.now() / 1000 - startTimestamp,
+    payload: {
+      ...state.payload,
+      [talker.id]: {
+        id: talker.id,
+        name,
+        time: Date.now()  - state.meta.time,
+      },
     },
   }
 }
 
 export type State = typeof initialState
 export interface Record {
+  id: string,
   name: string,
   time: number,
 }

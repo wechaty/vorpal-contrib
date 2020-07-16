@@ -35,8 +35,8 @@ import {
   inRoom,
   isText,
 }                     from './utils'
-import * as reporter  from './reporter'
-import { Monitor }   from './monitor'
+import { Reporter }   from './reporter'
+import { Monitor }    from './monitor'
 
 import {
   DEFAULT_OPTIONS,
@@ -54,6 +54,9 @@ async function action (
     ...args.options,
   }
 
+  const reporter = new Reporter(normalizedOptions, this.message)
+  const monitor  = new Monitor(normalizedOptions, this.message)
+
   if (normalizedOptions.summary) {
     this.stdout.next(reporter.summaryAll())
     return 0
@@ -66,7 +69,6 @@ async function action (
   }
 
   if (normalizedOptions.monitor) {
-    const monitor = new Monitor(normalizedOptions, this.message)
     if (monitor.busy()) {
       this.stderr.next('DDR monitor has already started.')
       return 1
@@ -82,7 +84,6 @@ async function action (
   }
 
   if (normalizedOptions.unmonitor) {
-    const monitor = new Monitor(normalizedOptions, this.message)
     if (!monitor.busy()) {
       this.stderr.next('DDR monitor is not running.')
       return 1

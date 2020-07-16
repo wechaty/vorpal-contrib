@@ -18,7 +18,7 @@ import {
   EventMessagePayload,
 }                       from 'wechaty-puppet'
 
-import * as reporter from './reporter'
+import { Reporter } from './reporter'
 import {
   toMessage$,
   inRoom,
@@ -86,6 +86,7 @@ class Monitor {
       })
     )
 
+    const reporter = new Reporter(this.options, this.message)
     Monitor.subStore[this.id()] = monitor$.subscribe(
       state => reporter.record(state)
     )

@@ -3,95 +3,187 @@ import moment from 'moment'
 import {
   State,
   Record,
-}           from './reducer'
+  initialState,
+}                   from './reducer'
+import { Monitor } from './monitor'
+import { Message } from 'wechaty'
+import { DdrOptions } from './ddr'
 
-const stateList: State[] = []
+class Reporter {
 
-const sortRecord = (a: Record, b: Record) => a.time - b.time
+  static stateList: State[] = []
 
-function record (state: State): void {
-  // console.info('record state', state)
-  stateList.push(state)
-}
+  private get stateList () {
+    // https://stackoverflow.com/a/29244254/1123955
+    const Klass = this.constructor as typeof Reporter
+    return Klass.stateList
+  }
 
-function describe (state: State): string {
-  let n = 0
-  const board = Object.values(state)
-    .sort(sortRecord)
-    .map(({ name, time }) => `#${++n} ${time.toFixed(3)}s: ${name}`)
-    .join('\n')
+  constructor (
+    protected options: DdrOptions,
+    protected message: Message,
+  ) {
+  }
 
-  return board
-}
+  record (state: State): void {
+    // console.info('record state', state)
+    this.stateList.push(state)
+  }
 
-function sum (): State {
-  const sumState = {} as State
-  for (const state of stateList) {
-    for (const [id, record] of Object.entries(state)) {
-      if (id in sumState) {
-        sumState[id] = {
-          name: record.name,
-          time: sumState[id].time + record.time,
-        }
-      } else {
-        sumState[id] = record
+  protected describe (state: State): string {
+    let n = 0
+
+    const sortRecord = (a: Record, b: Record) => a.time - b.time
+
+    const board = Object.values(state.payload)
+      .sort(sortRecord)
+      .map(({ name, time }) => `#${++n} ${(time / 1000).toFixed(3)}s: ${name}`)
+      .join('\n')
+
+    return board
+  }
+
+  protected describeDdr (state: State): string {
+    const ddrRate = this.ddrRateDict()
+
+    const sortRecord = (a: Record, b: Record) => ddrRate[b.id] - ddrRate[a.id]
+    let rank = 0
+
+    const board = Object.values(state.payload)
+      .sort(sortRecord)
+      .map(({ name, id }) => `#${++rank} ${ddrRate[id]}%: ${name}`)
+      .join('\n')
+
+    return board
+  }
+
+  protected recordList () {
+    return this.stateList.reduce((list, state) => [
+      ...list,
+      ...Object.values(state.payload),
+    ], [] as Record[])
+  }
+
+  protected idList () {
+    const list = this.stateList.reduce((list, state) => [
+      ...list,
+      ...Object.keys(state.payload),
+    ], [] as string[])
+
+    return [...new Set(list)]
+  }
+
+  protected idCounterDict () {
+    return this.stateList.reduce((dict, state) => {
+      Object.keys(state.payload).forEach(id => {
+        if (typeof id !== 'string') { return }
+        dict[id] = id in dict
+          ? dict[id] + 1
+          : 1
+      })
+      return dict
+    }, {} as { [id: string]: number})
+  }
+
+  protected sum (): State {
+    return this.recordList().reduce((state, record) => {
+      if (typeof record.id !== 'string') { return state }
+
+      const newState = {
+        ...state,
+        payload: {
+          ...state.payload,
+          [record.id]: {
+            ...record,
+            time: record.id in state.payload
+              ? record.time + state.payload[record.id].time
+              : record.time,
+          },
+        },
+      }
+      return newState
+    }, initialState)
+  }
+
+  protected average (): State {
+    const sumState     = this.sum()
+    const averageState = initialState
+
+    const count = (id: string) => this.stateList.filter(state => id in state.payload).length
+
+    for (const [id, record] of Object.entries(sumState.payload)) {
+      const counter = count(id)
+      if (counter <= 0) { continue }
+
+      averageState.payload[id] = {
+        id,
+        name: record.name,
+        time: record.time / counter,
       }
     }
+
+    return averageState
   }
-  return sumState
-}
 
-function average (): State {
-  const sumState     = sum()
-  const averageState = {} as State
+  reset (): void {
+    Reporter.stateList.length = 0
+  }
 
-  const count = (id: string) => stateList.filter(state => id in state).length
-  for (const [id, record] of Object.entries(sumState)) {
-    const counter = count(id)
-    if (counter <= 0) { continue }
+  ddrRate (): number {
+    const totalDingNum = Math.max(0, ...Object.values(this.idCounterDict()))
+    const botNum = this.idList().length
+    // console.info('totalDingNum', totalDingNum)
+    // console.info('botNum', botNum)
 
-    averageState[id] = {
-      name: record.name,
-      time: record.time / counter,
+    const expectedDongNum = botNum * totalDingNum
+    const actualDongNum = Object.values(this.idCounterDict()).reduce((acc, cur) => acc + (cur ?? 0), 0)
+    // console.info('expectedDongNum', expectedDongNum)
+
+    if (expectedDongNum <= 0) {
+      return 0
     }
+
+    const ddr = actualDongNum / expectedDongNum
+    return Math.floor(100 * ddr)
   }
 
-  // console.info('sumState', sumState)
-  // console.info('averageState', averageState)
+  ddrRateDict () {
+    const totalDingNum = Math.max(...Object.values(this.idCounterDict()))
+    return Object.entries(this.idCounterDict())
+      .reduce((dict, [id, num]) => {
+        dict[id] = Math.floor(100 * num / totalDingNum)
+        return dict
+      }, {} as {[id: string]: number})
+  }
 
-  return averageState
-}
+  summary (state: State): string {
+    const description = this.describe(state)
+    return [
+      `Record: (${moment().format('lll')})`,
+      '',
+      description,
+      '',
+      `Total ${Object.keys(state.payload).length} bots.`,
+    ].join('\n')
+  }
 
-function reset (): void {
-  stateList.length = 0
-}
+  summaryAll (): string {
+    const avgState = this.average()
+    const avgDescription = this.describeDdr(avgState)
+    const monitor = new Monitor(this.options, this.message)
 
-function summary (state: State): string {
-  const description = describe(state)
-  return [
-    `Record: (${moment().format('lll')})`,
-    '',
-    description,
-    '',
-    `Total ${Object.keys(state).length} bots.`,
-  ].join('\n')
-}
+    return [
+      `History Summary (Monitor:${monitor.busy() ? 'ON' : 'OFF'})`,
+      '',
+      avgDescription,
+      '',
+      `Total ${Object.keys(avgState.payload).length} bots with ${Reporter.stateList.length} DDR tests.`,
+      `Final DDR: ${this.ddrRate()}%`,
+    ].join('\n')
+  }
 
-function summaryAll (): string {
-  const avgState = average()
-  const avgDescription = describe(avgState)
-  return [
-    'History Summary',
-    '',
-    avgDescription,
-    '',
-    `Total ${Object.keys(avgState).length} bots with ${stateList.length} DDR tests.`,
-  ].join('\n')
 }
 
 export {
-  record,
-  reset,
-  summary,
-  summaryAll,
+  Reporter,
 }

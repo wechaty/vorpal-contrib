@@ -126,7 +126,7 @@ class Reporter {
   }
 
   reset (): void {
-    Reporter.stateList.length = 0
+    this.stateList.length = 0
   }
 
   ddrRate (): number {

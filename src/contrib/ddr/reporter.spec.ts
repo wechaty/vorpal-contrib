@@ -150,7 +150,7 @@ test('Reporter ddrRateDict()', async t => {
   }
 })
 
-test.only('Reporter ddrRate()', async t => {
+test('Reporter ddrRate()', async t => {
   for await (const fixture of createFixture()) {
     const reporter = new ReporterTest(
       DEFAULT_OPTIONS,
@@ -180,5 +180,36 @@ test.only('Reporter ddrRate()', async t => {
     const EXPECTED_DDR_RATE = 66
     ddrRate = reporter.ddrRate()
     t.deepEqual(ddrRate, EXPECTED_DDR_RATE, 'should calc the expected ddr rate')
+  }
+})
+
+test('Reporter reset()', async t => {
+  for await (const fixture of createFixture()) {
+    const reporter = new ReporterTest(
+      DEFAULT_OPTIONS,
+      fixture.message,
+    )
+
+    ReporterTest.stateList = [
+      {
+        meta: { time: 0 },
+        payload: {
+          a: { id: 'a', name: 'aaa', time: 10 },
+          b: { id: 'b', name: 'bbb', time: 20 },
+        },
+      },
+      {
+        meta: { time: 0 },
+        payload: {
+          b: { id: 'b', name: 'bbb', time: 30 },
+          c: { id: 'c', name: 'ccc', time: 40 },
+        },
+      },
+    ]
+
+    reporter.reset()
+
+    const summary = reporter.summaryAll()
+    t.match(summary, /Total 0 bots with 0 DDR tests/i, 'should clean summary after reset()')
   }
 })

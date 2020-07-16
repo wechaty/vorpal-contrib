@@ -71,8 +71,8 @@ async function whoruAction (
     `This is ${pkg?.name}@${pkg?.version}, ${pkg?.description}`,
     '',
     [
-      `${botAge}, I logged in WeChat as ${botName},`,
-      `with Wechaty is ${wechatyName}@${wechatyVersion}`,
+      `I logged in WeChat as ${botName} ${botAge},`,
+      `my Wechaty is ${wechatyName}@${wechatyVersion}`,
       `backed by ${puppetName}@${puppetVersion}`,
       `extended from wechaty-puppet@${WECHATY_PUPPET_VERSION}.`,
     ].join(' '),

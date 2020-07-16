@@ -58,7 +58,8 @@
     "json-stringify-safe": "^5.0.1",
     "moment": "^2.27.0",
     "public-ip": "^4.0.2",
-    "read-pkg-up": "^7.0.1"
+    "read-pkg-up": "^7.0.1",
+    "utility-types": "^3.10.0"
   },
   "peerDependencies": {
     "wechaty-vorpal": "*"

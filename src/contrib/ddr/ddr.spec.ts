@@ -15,7 +15,8 @@ import {
   WechatyVorpal,
 }                   from 'wechaty-vorpal'
 
-import { Ddr } from './ddr'
+import { Ddr }      from './ddr'
+import { Reporter } from './reporter'
 
 test('ddr', async t => {
   for await (const fixture of createFixture()) {
@@ -61,6 +62,8 @@ test('ddr', async t => {
     // t.true(summaryAll, 'should get summaryAll')
 
     await new Promise(setImmediate)
+
+    Reporter.stateList.length = 0
   }
 })
 

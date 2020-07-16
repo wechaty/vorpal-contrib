@@ -68,22 +68,27 @@ async function action (
   if (normalizedOptions.monitor) {
     const monitor = new Monitor(normalizedOptions, this.message)
     if (monitor.busy()) {
-      this.stderr.next('DDR monitor has already existed.')
+      this.stderr.next('DDR monitor has already started.')
       return 1
     }
 
     monitor.start()
-    this.stdout.next('DDR monitor started.')
+    this.stdout.next([
+      'DDR monitor started.',
+      `Trigger: ${normalizedOptions.ding}`,
+      `Expect: ${normalizedOptions.dong}`,
+    ].join('\n'))
     return 0
   }
 
   if (normalizedOptions.unmonitor) {
     const monitor = new Monitor(normalizedOptions, this.message)
     if (!monitor.busy()) {
-      this.stderr.next('DDR monitor has not existed.')
+      this.stderr.next('DDR monitor is not running.')
       return 1
     }
     monitor.stop()
+    this.stderr.next('DDR monitor has been stopped.')
     return 0
   }
 

@@ -69,10 +69,10 @@ async function whoruAction (
 
   const reportList = [
     `This is ${pkg?.name}@${pkg?.version}, ${pkg?.description}`,
-    `Now I'm logged in by ${botName} ${botAge}.`,
     '',
     [
-      `My Wechaty is ${wechatyName}@${wechatyVersion}`,
+      `${botAge}, I logged in WeChat as ${botName},`,
+      `with Wechaty is ${wechatyName}@${wechatyVersion}`,
       `backed by ${puppetName}@${puppetVersion}`,
       `extended from wechaty-puppet@${WECHATY_PUPPET_VERSION}.`,
     ].join(' '),
@@ -99,10 +99,10 @@ async function whoruAction (
       [
         `I'm running on ${osHostname} (${osType}/${osArch})`,
         `with ${osTotalmemMb} MB memory,`,
-        `and it has been up for ${osUptime}.`,
+        `internal ip ${osIp}, external ip ${netIp},`,
+        `up for ${osUptime}.`,
       ].join(' '),
       '',
-      `its internal ip is ${osIp}, external ip is ${netIp}.`
     )
   }
 

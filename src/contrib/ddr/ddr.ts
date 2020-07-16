@@ -27,7 +27,7 @@ export interface DdrOptions {
   timeout    : number,
   summary?   : boolean,
   reset?     : boolean,
-  monitor?   : boolean,
+  monitor?   : boolean | string,
   unmonitor? : boolean,
 }
 
@@ -50,7 +50,7 @@ function Ddr (config: DdrConfig = {}) {
       .option('-d --ding <ding>', 'Define the message for sending. (default `ding`)')
       .option('-D --dong <dong>', 'Define the expected message for receiving. (default `dong`)')
       .option('-t --timeout <timeout>', `Define the maximum seconds for waiting a dong after ding. (default ${DEFAULT_TIMEOUT}s)`)
-      .option('-m --monitor', 'Monitor the DDR in the background')
+      .option('-m --monitor [interval seconds]', 'Monitor the DDR in the background (specific an interval seconds to schedule tests)')
       .option('-u --unmonitor', 'Unmonitor the DDR in the background')
       .option('-s --summary', 'Summary the DDR status')
       .option('-r --reset', 'Reset all DDR data that received')

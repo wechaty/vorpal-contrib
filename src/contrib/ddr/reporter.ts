@@ -177,8 +177,15 @@ class Reporter {
     const avgDescription = this.describeDdr(avgState)
     const monitor = new Monitor(this.options, this.message)
 
+    const busy = monitor.busy()
+    const monitorStatus = typeof busy === 'string'
+      ? busy
+      : busy
+        ? 'ON'
+        : 'OFF'
+
     return [
-      `History Summary (Monitor:${monitor.busy() ? 'ON' : 'OFF'})`,
+      `History Summary (Monitor:${monitorStatus})`,
       '',
       avgDescription,
       '',

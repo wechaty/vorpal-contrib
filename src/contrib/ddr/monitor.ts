@@ -40,7 +40,7 @@ interface MonitorStore {
   [id: string]: {
     sub?      : Subscription
     timer?    : NodeJS.Timer,
-    interval? : number | string,
+    interval? : string,
   }
 }
 
@@ -59,7 +59,7 @@ class Monitor {
     return `${this.message.talker().id}#${this.message.room()?.id}`
   }
 
-  busy (): boolean | number | string {
+  busy (): boolean | string {
     const item = Monitor.store[this.id()]
 
     if (!item) {
@@ -120,15 +120,17 @@ class Monitor {
      */
     if (typeof interval !== 'boolean') {
 
-      storeItem.interval = interval
-
       let intervalSeconds = 60 * 60  // default 1 hour1
 
       if (typeof interval === 'number') {
+        storeItem.interval = interval + 's'
+
         if (interval > 10) {
           intervalSeconds = interval
         }
       } else if (typeof interval === 'string') {
+        storeItem.interval = interval
+
         const match = interval.match(/^(\d+)(\w*)$/)
 
         if (match) {

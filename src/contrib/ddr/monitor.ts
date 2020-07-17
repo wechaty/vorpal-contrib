@@ -40,7 +40,7 @@ interface MonitorStore {
   [id: string]: {
     sub?      : Subscription
     timer?    : NodeJS.Timer,
-    interval? : string,
+    interval? : number | string,
   }
 }
 
@@ -59,7 +59,7 @@ class Monitor {
     return `${this.message.talker().id}#${this.message.room()?.id}`
   }
 
-  busy (): boolean | string {
+  busy (): boolean | number | string {
     const item = Monitor.store[this.id()]
 
     if (!item) {
@@ -71,7 +71,7 @@ class Monitor {
     return true
   }
 
-  start (interval: string | true): boolean {
+  start (interval: true | number | string): boolean {
     log.verbose('Monitor', 'start(%s)', interval || '')
 
     if (this.busy()) {
@@ -114,25 +114,36 @@ class Monitor {
     )
 
     /**
-     * Setup schedule testing
+     *
+     * Setup schedule testing interval numbers
+     *
      */
     if (typeof interval !== 'boolean') {
+
       storeItem.interval = interval
-      const match = interval.match(/^(\d+)(\w*)$/)
 
       let intervalSeconds = 60 * 60  // default 1 hour1
 
-      if (match) {
-        if (match[2]) {           // '60s'
-          intervalSeconds = moment.duration(
-            parseInt(match[1], 10),
-            match[2] as any,
-          ).asSeconds()
-        } else {                  // '60'
-          intervalSeconds = parseInt(match[1], 10)
+      if (typeof interval === 'number') {
+        if (interval > 10) {
+          intervalSeconds = interval
+        }
+      } else if (typeof interval === 'string') {
+        const match = interval.match(/^(\d+)(\w*)$/)
+
+        if (match) {
+          if (match[2]) {           // '60s'
+            intervalSeconds = moment.duration(
+              parseInt(match[1], 10),
+              match[2] as any,
+            ).asSeconds()
+          } else {                  // '60'
+            intervalSeconds = parseInt(match[1], 10)
+          }
         }
       }
-      log.verbose('Monitor', 'start() interval resolved to %s seconds', interval)
+
+      log.verbose('Monitor', 'start() interval "%s" resolved to %s seconds', interval, intervalSeconds)
 
       storeItem.timer = setInterval(
         () => this.message.say(this.options.ding),

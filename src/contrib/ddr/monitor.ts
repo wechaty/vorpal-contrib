@@ -23,6 +23,7 @@ import {
   toMessage$,
   inRoom,
   isText,
+  isNotSelf,
 }                     from './utils'
 import {
   nextState,
@@ -77,6 +78,7 @@ class Monitor {
       mergeMap(_ => {
         const timeout$ = timer(this.options.timeout * 1000)
         return messageDong$.pipe(
+          filter(isNotSelf),
           startWith(undefined),
           scan(nextState, Promise.resolve(initialState)),
           mergeMap(v => from(v)),

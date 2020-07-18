@@ -23,6 +23,7 @@ const toMessage$ = (wechaty: Wechaty) => (payload: EventMessagePayload) => {
 }
 
 const inRoom = (room: null | Room) => (message: Message): boolean => !!(room && room === message.room())
+const isNotSelf = (message: Message) => !message.self()
 const isText = (text: string) => (message: Message) => {
   if (message.type() === Message.Type.Text) {
     return message.text() === text
@@ -34,4 +35,5 @@ export {
   toMessage$,
   inRoom,
   isText,
+  isNotSelf,
 }

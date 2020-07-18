@@ -34,6 +34,7 @@ import {
   toMessage$,
   inRoom,
   isText,
+  isNotSelf,
 }                     from './utils'
 import { Reporter }   from './reporter'
 import { Monitor }    from './monitor'
@@ -93,6 +94,16 @@ async function action (
     return 0
   }
 
+  if (normalizedOptions.ignore) {
+    this.stdout.next(JSON.stringify(args))
+    return 0
+  }
+
+  if (normalizedOptions.unignore) {
+    this.stdout.next(JSON.stringify(args))
+    return 0
+  }
+
   const message$ = fromEvent<EventMessagePayload>(this.wechaty.puppet, 'message')
   const timeout$ = timer(normalizedOptions.timeout * 1000)
 
@@ -100,6 +111,7 @@ async function action (
     mergeMap(toMessage$(this.wechaty)),
     filter(inRoom(this.message.room())),
     filter(isText(normalizedOptions.dong)),
+    filter(isNotSelf),
     startWith(undefined),
     scan(nextState, Promise.resolve(initialState)),
     mergeMap(v => from(v)), // await promise for `v`

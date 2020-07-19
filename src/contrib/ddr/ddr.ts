@@ -24,9 +24,11 @@ export interface DdrConfig extends WechatyVorpalConfig {}
 export interface DdrOptions {
   ding       : string,
   dong       : string,
+
   timeout    : number,
   summary?   : boolean,
   reset?     : boolean,
+
   monitor?   : boolean | number | string,
   unmonitor? : boolean,
 

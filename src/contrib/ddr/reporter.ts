@@ -13,7 +13,7 @@ class Reporter {
 
   static stateList: State[] = []
 
-  private get stateList () {
+  protected get stateList () {
     // https://stackoverflow.com/a/29244254/1123955
     const Klass = this.constructor as typeof Reporter
     return Klass.stateList
@@ -90,7 +90,7 @@ class Reporter {
       if (typeof record.id !== 'string') { return state }
 
       const newState = {
-        ...state,
+        meta: { ...state.meta },
         payload: {
           ...state.payload,
           [record.id]: {
@@ -107,7 +107,12 @@ class Reporter {
 
   protected average (): State {
     const sumState     = this.sum()
-    const averageState = initialState
+
+    // To prevent mutate the initialState
+    const averageState = {
+      meta    : { ...initialState.meta },
+      payload : { ...initialState.payload },
+    }
 
     const count = (id: string) => this.stateList.filter(state => id in state.payload).length
 
@@ -172,12 +177,19 @@ class Reporter {
     const avgDescription = this.describeDdr(avgState)
     const monitor = new Monitor(this.options, this.message)
 
+    const busy = monitor.busy()
+    const monitorStatus = typeof busy === 'string'
+      ? busy
+      : busy
+        ? 'ON'
+        : 'OFF'
+
     return [
-      `History Summary (Monitor:${monitor.busy() ? 'ON' : 'OFF'})`,
+      `History Summary (Monitor:${monitorStatus})`,
       '',
       avgDescription,
       '',
-      `Total ${Object.keys(avgState.payload).length} bots with ${Reporter.stateList.length} DDR tests.`,
+      `Total ${Object.keys(avgState.payload).length} bots with ${this.stateList.length} DDR tests.`,
       `Final DDR: ${this.ddrRate()}%`,
     ].join('\n')
   }

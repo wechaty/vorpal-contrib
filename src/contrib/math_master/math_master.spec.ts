@@ -91,15 +91,19 @@ test('math_master', async t => {
   player.say('math_master').to(bot)
 
   const scoreFuture = expectGameScore(player)
-  const boardFuture = expectGameBoard(player)
+  const boardFuture = expectGameBoard(player, bot)
 
   const score = await scoreFuture
   t.true(score >= 1, 'should play game and get a score')
 
+  // console.info('before expectGameBoard')
   await boardFuture
+  // console.info('after expectGameBoard')
 
   await new Promise(setImmediate)
+  await new Promise(resolve => setTimeout(resolve, 100))
   await wechaty.stop()
+  // console.info('after wechaty.stop()')
 })
 
 function expectGameScore (player: mock.ContactMock) {
@@ -122,14 +126,15 @@ function expectGameScore (player: mock.ContactMock) {
   })
 }
 
-function expectGameBoard (player: mock.ContactMock) {
+function expectGameBoard (player: mock.ContactMock, bot: mock.ContactMock) {
   return  new Promise<number>(resolve => {
     const onMessage = (message: mock.MessageMock) => {
       if (message.type() !== Message.Type.Text) { return }
       const text = message.text() || ''
 
       if (/ say /i.test(text)) {
-        player.say('my comment to leader board')
+        // console.info('say ...')
+        player.say('my comment to leader board').to(bot)
         resolve()
         player.off('message', onMessage)
       }

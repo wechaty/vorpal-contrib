@@ -1,3 +1,4 @@
+import moment from 'moment'
 import {
   timer,
   fromEvent,
@@ -13,7 +14,10 @@ import {
   takeLast,
 }               from 'rxjs/operators'
 
-import { Message } from 'wechaty'
+import {
+  Message,
+  log,
+}                 from 'wechaty'
 import {
   EventMessagePayload,
 }                       from 'wechaty-puppet'
@@ -33,13 +37,17 @@ import {
   DdrOptions,
 }                   from './ddr'
 
-interface SubStore {
-  [id: string]: Subscription
+interface MonitorStore {
+  [id: string]: {
+    sub?      : Subscription
+    timer?    : NodeJS.Timer,
+    interval? : string,
+  }
 }
 
 class Monitor {
 
-  static subStore: SubStore  = {}
+  static store: MonitorStore  = {}
 
   constructor (
     protected options: DdrOptions,
@@ -52,14 +60,27 @@ class Monitor {
     return `${this.message.talker().id}#${this.message.room()?.id}`
   }
 
-  busy () {
-    return this.id() in Monitor.subStore
+  busy (): boolean | string {
+    const item = Monitor.store[this.id()]
+
+    if (!item) {
+      return false
+    }
+    if (item.interval) {
+      return item.interval
+    }
+    return true
   }
 
-  start (): boolean {
+  start (interval: true | number | string): boolean {
+    log.verbose('Monitor', 'start(%s)', interval || '')
+
     if (this.busy()) {
       return false
     }
+
+    Monitor.store[this.id()] = {}
+    const storeItem = Monitor.store[this.id()]
 
     const wechatyMessage$ = fromEvent<EventMessagePayload>(this.message.wechaty.puppet, 'message')
 
@@ -89,10 +110,51 @@ class Monitor {
     )
 
     const reporter = new Reporter(this.options, this.message)
-    Monitor.subStore[this.id()] = monitor$.subscribe(
+
+    storeItem.sub = monitor$.subscribe(
       state => reporter.record(state)
     )
 
+    /**
+     *
+     * Setup schedule testing interval numbers
+     *
+     */
+    if (typeof interval !== 'boolean') {
+
+      let intervalSeconds = 60 * 60  // default 1 hour1
+
+      if (typeof interval === 'number') {
+        storeItem.interval = interval + 's'
+
+        if (interval > 10) {
+          intervalSeconds = interval
+        }
+      } else if (typeof interval === 'string') {
+        storeItem.interval = interval
+
+        const match = interval.match(/^(\d+)(\w*)$/)
+
+        if (match) {
+          if (match[2]) {           // '60s'
+            intervalSeconds = moment.duration(
+              parseInt(match[1], 10),
+              match[2] as any,
+            ).asSeconds()
+          } else {                  // '60'
+            intervalSeconds = parseInt(match[1], 10)
+          }
+        }
+      }
+
+      log.verbose('Monitor', 'start() interval "%s" resolved to %s seconds', interval, intervalSeconds)
+
+      storeItem.timer = setInterval(
+        () => this.message.say(this.options.ding),
+        intervalSeconds * 1000,
+      )
+
+    }
     return true
   }
 
@@ -100,8 +162,19 @@ class Monitor {
     if (!this.busy()) {
       return false
     }
-    Monitor.subStore[this.id()].unsubscribe()
-    delete Monitor.subStore[this.id()]
+
+    const storeItem = Monitor.store[this.id()]
+    if (storeItem) {
+      if (storeItem.sub) {
+        storeItem.sub.unsubscribe()
+        storeItem.sub = undefined
+      }
+      if (storeItem.timer) {
+        clearInterval(storeItem.timer)
+        storeItem.timer = undefined
+      }
+      delete Monitor.store[this.id()]
+    }
     return true
   }
 

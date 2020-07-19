@@ -1,13 +1,16 @@
 import { Message } from 'wechaty'
+import {
+  DeepReadonly,
+}                 from 'utility-types'
 
-const initialState: {
+const initialState: DeepReadonly<{
   meta: {
     time: number
   },
   payload: {
     [id: string]: Record
   }
-} = {
+}> = {
   meta: {
     time: 0,
   },
@@ -55,7 +58,10 @@ const nextState = async (stateFuture: Promise<State>, message?: Message): Promis
   }
 }
 
-export type State = typeof initialState
+// https://stackoverflow.com/a/43001581/1123955
+type DeepWriteable<T> = { -readonly [P in keyof T]: DeepWriteable<T[P]> }
+
+export type State = DeepWriteable<typeof initialState>
 export interface Record {
   id: string,
   name: string,

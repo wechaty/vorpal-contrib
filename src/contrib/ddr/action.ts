@@ -50,6 +50,7 @@ async function action (
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'ddrAction("%s")', JSON.stringify(args))
 
+  // console.info('args', args)
   const normalizedOptions: DdrOptions = {
     ...DEFAULT_OPTIONS,
     ...args.options,
@@ -75,12 +76,18 @@ async function action (
       return 1
     }
 
-    monitor.start()
-    this.stdout.next([
+    monitor.start(normalizedOptions.monitor)
+    const list = [
       'DDR monitor started.',
+    ]
+    if (typeof normalizedOptions.monitor !== 'boolean') {
+      list.push(`Schedule tests every ${normalizedOptions.monitor}`)
+    }
+    list.push(
       `Trigger: ${normalizedOptions.ding}`,
       `Expect: ${normalizedOptions.dong}`,
-    ].join('\n'))
+    )
+    this.stdout.next(list.join('\n'))
     return 0
   }
 

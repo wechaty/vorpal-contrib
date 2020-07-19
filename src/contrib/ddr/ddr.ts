@@ -27,12 +27,7 @@ export interface DdrOptions {
   timeout    : number,
   summary?   : boolean,
   reset?     : boolean,
-<<<<<<< HEAD
-
-  monitor?   : boolean,
-=======
   monitor?   : boolean | number | string,
->>>>>>> 673e3773d173ea6d8d272fd2c16d4868f959383a
   unmonitor? : boolean,
 
   ignore?   : boolean | string,

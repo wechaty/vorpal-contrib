@@ -1,4 +1,4 @@
-const DEFAULT_TIMEOUT = 10  // seconds
+const DEFAULT_TIMEOUT = 15  // seconds
 const DEFAULT_NAME    = 'ddr'
 
 export {

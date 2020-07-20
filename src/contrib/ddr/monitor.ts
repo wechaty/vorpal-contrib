@@ -3,7 +3,6 @@ import {
   timer,
   fromEvent,
   from,
-  Subscription,
 }               from 'rxjs'
 import {
   scan,
@@ -32,6 +31,7 @@ import {
 import {
   nextState,
   initialState,
+  State,
 }                   from './reducer'
 import {
   DdrOptions,
@@ -39,7 +39,6 @@ import {
 
 interface MonitorStore {
   [id: string]: {
-    sub?      : Subscription
     timer?    : NodeJS.Timer,
     interval? : string,
   }
@@ -71,7 +70,58 @@ class Monitor {
     return true
   }
 
-  state$ () {
+  ddr$ (): Promise<State> {
+    const wechatyMessage$ = fromEvent<EventMessagePayload>(
+      this.message.wechaty.puppet,
+      'message',
+    )
+
+    const messageDingDong$ = wechatyMessage$.pipe(
+      mergeMap(toMessage$(this.message.wechaty)),
+      filter(sameRoom(this.message)),
+      filter(isText([
+        this.options.ding,
+        this.options.dong,
+      ])),
+    )
+
+    const ding = async (v: undefined | Message) => {
+      if (typeof v === 'undefined') {
+        await this.message.say(this.options.ding)
+      }
+    }
+    const timer$ = timer(this.options.timeout * 1000)
+    const state$ = messageDingDong$.pipe(
+      startWith(undefined),
+      tap(ding),
+      scan(nextState, Promise.resolve(initialState)),
+      mergeMap(v => from(v)), // resolve the Promise
+      takeUntil(timer$),
+      takeLast(1),
+    )
+
+    return state$.toPromise()
+  }
+
+  async ddr (): Promise<void> {
+    const reporter = new Reporter(this.options, this.message, this)
+
+    const state = await this.ddr$()
+
+    reporter.record(state)
+
+    await this.message.say(reporter.summary(state))
+    await this.message.wechaty.sleep(1000)
+    await this.message.say(reporter.summaryAll())
+  }
+
+  /**
+   * Huan(202007): This method has limitations when the bot is running on a slow network/machine
+   *
+   *  When we got a `ding` message, there might not be enough time to start another listener to get the `dong` messages,
+   *  so there will have a very high probability that we will miss the `dong` message counting.
+   */
+  passiveState$ () {
     const wechatyMessage$ = fromEvent<EventMessagePayload>(
       this.message.wechaty.puppet,
       'message',
@@ -115,19 +165,6 @@ class Monitor {
     Monitor.store[this.id()] = {}
     const storeItem = Monitor.store[this.id()]
 
-    const reporter = new Reporter(this.options, this.message)
-
-    if (storeItem.sub) {
-      throw new Error('can not start: existing subscription found')
-    }
-
-    storeItem.sub = this.state$().subscribe(async state => {
-      reporter.record(state)
-      await this.message.say(reporter.summary(state))
-      await this.message.wechaty.sleep(1000)
-      await this.message.say(reporter.summaryAll())
-    })
-
     /**
      *
      * Setup schedule testing interval numbers
@@ -163,7 +200,7 @@ class Monitor {
       log.verbose('Monitor', 'start() interval "%s" resolved to %s seconds', interval, intervalSeconds)
 
       storeItem.timer = setInterval(
-        () => this.message.say(this.options.ding),
+        async () => { await this.ddr() },
         intervalSeconds * 1000,
       )
 
@@ -178,10 +215,6 @@ class Monitor {
 
     const storeItem = Monitor.store[this.id()]
     if (storeItem) {
-      if (storeItem.sub) {
-        storeItem.sub.unsubscribe()
-        storeItem.sub = undefined
-      }
       if (storeItem.timer) {
         clearInterval(storeItem.timer)
         storeItem.timer = undefined

@@ -23,11 +23,15 @@ const toMessage$ = (wechaty: Wechaty) => (payload: EventMessagePayload) => {
 
 const sameRoom = (roomMessage: Message) => (message: Message): boolean => !!(roomMessage.room() && roomMessage.room() === message.room())
 const isNotSelf = (message: Message) => !message.self()
-const isText = (text: string) => (message: Message) => {
-  if (message.type() === Message.Type.Text) {
-    return message.text() === text
+const isText = (textList: string | string[]) => (message: Message) => {
+  if (!Array.isArray(textList)) {
+    textList = [textList]
   }
-  return false
+
+  return textList.some(text => message.type() === Message.Type.Text
+    ? message.text() === text
+    : false
+  )
 }
 
 export {

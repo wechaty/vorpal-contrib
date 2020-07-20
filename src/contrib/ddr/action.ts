@@ -3,10 +3,6 @@
  *  Huan <zixia@zixia.net>
  */
 import {
-  first,
-}               from 'rxjs/operators'
-
-import {
   log,
 }                       from 'wechaty'
 import {
@@ -90,15 +86,7 @@ async function action (
   }
 
   try {
-    const future = monitor.state$()
-      .pipe(first())
-      .toPromise()
-    this.stdout.next(normalizedOptions.ding)
-
-    const state = await future
-    reporter.record(state)
-    this.stdout.next(reporter.summary(state))
-    // this.stdout.next(reporter.summaryAll())
+    await monitor.ddr()
 
     return 0
 

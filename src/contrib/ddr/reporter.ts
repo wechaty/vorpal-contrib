@@ -222,7 +222,7 @@ class Reporter {
     const lostBotNames = Object.keys(this.idCounterDict())
       .filter(id => !curBotIdSet.has(id))
       .map(id => this.message.wechaty.Contact.load(id).name())
-      .map(text => `#${++n} ${text}`)
+      .map(text => `#${--n} ${text}`)
 
     return lostBotNames.length
       ? ['Lost:', ...lostBotNames].join('\n')

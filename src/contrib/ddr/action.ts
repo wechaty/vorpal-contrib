@@ -34,7 +34,7 @@ async function action (
     ...args.options,
   }
 
-  const monitor  = new Monitor(normalizedOptions, this.message, this.stdout)
+  const monitor  = new Monitor(normalizedOptions, this.message)
   const reporter = new Reporter(normalizedOptions, this.message, monitor)
 
   if (normalizedOptions.summary) {

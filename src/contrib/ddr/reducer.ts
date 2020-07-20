@@ -45,7 +45,7 @@ const nextState = async (stateFuture: Promise<State>, message?: Message): Promis
     }
   }
 
-  return {
+  const newState = {
     ...state,
     payload: {
       ...state.payload,
@@ -56,6 +56,7 @@ const nextState = async (stateFuture: Promise<State>, message?: Message): Promis
       },
     },
   }
+  return newState
 }
 
 // https://stackoverflow.com/a/43001581/1123955

@@ -12,6 +12,7 @@ import {
   startWith,
   filter,
   takeLast,
+  tap,
 }               from 'rxjs/operators'
 
 import {
@@ -35,7 +36,6 @@ import {
 import {
   DdrOptions,
 }                   from './ddr'
-import { ObsIo } from 'wechaty-vorpal'
 
 interface MonitorStore {
   [id: string]: {
@@ -52,7 +52,6 @@ class Monitor {
   constructor (
     protected options: DdrOptions,
     protected message: Message,
-    protected stdout: ObsIo['stdout'],
   ) {
   }
 
@@ -122,10 +121,11 @@ class Monitor {
       throw new Error('can not start: existing subscription found')
     }
 
-    storeItem.sub = this.state$().subscribe(state => {
+    storeItem.sub = this.state$().subscribe(async state => {
       reporter.record(state)
-      this.stdout.next(reporter.summary(state))
-      this.stdout.next(reporter.summaryAll())
+      await this.message.say(reporter.summary(state))
+      await this.message.wechaty.sleep(1000)
+      await this.message.say(reporter.summaryAll())
     })
 
     /**

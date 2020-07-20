@@ -217,13 +217,15 @@ class Reporter {
   summaryMissing (state: State): undefined | string {
     const curBotIdSet = new Set(Object.keys(state.payload))
 
+    let n = 0
+
     const lostBotNames = Object.keys(this.idCounterDict())
       .filter(id => !curBotIdSet.has(id))
       .map(id => this.message.wechaty.Contact.load(id).name())
-      .join(', ')
+      .map(text => `#${++n} ${text}`)
 
-    return lostBotNames
-      ? `Lost: (${lostBotNames})`
+    return lostBotNames.length
+      ? ['Lost:', ...lostBotNames].join('\n')
       : undefined
   }
 

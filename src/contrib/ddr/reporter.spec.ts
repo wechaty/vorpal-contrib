@@ -184,7 +184,7 @@ test('Reporter ddrRateDict()', async t => {
   }
 })
 
-test('Reporter ddrRate()', async t => {
+test('Reporter ddrRateAll()', async t => {
   for await (const fixture of createFixture()) {
     const ReporterTest = createReporterTestClass()
     const reporter = new ReporterTest(
@@ -194,7 +194,7 @@ test('Reporter ddrRate()', async t => {
 
     // console.info('stateList', ReporterTest.stateList)
 
-    let ddrRate = reporter.ddrRate()
+    let ddrRate = reporter.ddrRateAll()
     t.equal(ddrRate, 0, 'should get ddr rate 0 if no data')
 
     ReporterTest.stateList = [
@@ -215,8 +215,62 @@ test('Reporter ddrRate()', async t => {
     ]
 
     const EXPECTED_DDR_RATE = 66
-    ddrRate = reporter.ddrRate()
+    ddrRate = reporter.ddrRateAll()
     t.deepEqual(ddrRate, EXPECTED_DDR_RATE, 'should calc the expected ddr rate')
+  }
+})
+
+test('Reporter ddrRateSigma()', async t => {
+  for await (const fixture of createFixture()) {
+    const ReporterTest = createReporterTestClass()
+    const reporter = new ReporterTest(
+      DEFAULT_OPTIONS,
+      fixture.message,
+    )
+
+    // console.info('stateList', ReporterTest.stateList)
+
+    let ddrRateSigma = reporter.ddrRateSigma()
+    // let ddrRateAll = reporter.ddrRateAll()
+
+    t.equal(ddrRateSigma, 0, 'should get ddr rate sigma 0 if no data')
+
+    ReporterTest.stateList = [
+      {
+        meta: { time: 0 },
+        payload: {
+          a: { id: 'a', name: 'aaa', time: 10 },
+          b: { id: 'b', name: 'bbb', time: 20 },
+          c: { id: 'c', name: 'ccc', time: 20 },
+          d: { id: 'd', name: 'ddd', time: 20 },
+        },
+      },
+      {
+        meta: { time: 0 },
+        payload: {
+          a: { id: 'a', name: 'aaa', time: 30 },
+          b: { id: 'b', name: 'bbb', time: 30 },
+          c: { id: 'c', name: 'ccc', time: 20 },
+        },
+      },
+      {
+        meta: { time: 0 },
+        payload: {
+          a: { id: 'a', name: 'aaa', time: 30 },
+          b: { id: 'b', name: 'bbb', time: 30 },
+        },
+      },
+      {
+        meta: { time: 0 },
+        payload: {
+          a: { id: 'a', name: 'aaa', time: 30 },
+        },
+      },
+    ]
+
+    const EXPECTED_DDR_RATE = 83
+    ddrRateSigma = reporter.ddrRateSigma()
+    t.deepEqual(ddrRateSigma, EXPECTED_DDR_RATE, 'should calc the expected ddr rate sigma')
   }
 })
 

@@ -112,6 +112,13 @@ class Monitor {
 
     await this.message.say(reporter.summary(state))
     await this.message.wechaty.sleep(1000)
+
+    const missing = reporter.summaryMissing(state)
+    if (missing) {
+      await this.message.say(missing)
+    }
+
+    await this.message.wechaty.sleep(1000)
     await this.message.say(reporter.summaryAll())
   }
 

@@ -214,6 +214,19 @@ class Reporter {
     ].join('\n')
   }
 
+  summaryMissing (state: State): undefined | string {
+    const curBotIdSet = new Set(Object.keys(state.payload))
+
+    const lostBotNames = Object.keys(this.idCounterDict())
+      .filter(id => !curBotIdSet.has(id))
+      .map(id => this.message.wechaty.Contact.load(id).name())
+      .join(', ')
+
+    return lostBotNames
+      ? `Lost: (${lostBotNames})`
+      : undefined
+  }
+
   summaryAll (): string {
     const avgState = this.average()
     const avgDescription = this.describeDdr(avgState)

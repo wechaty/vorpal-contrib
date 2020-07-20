@@ -27,6 +27,7 @@ import {
   toMessage$,
   sameRoom,
   isText,
+  isNotSelf,
 }                     from './utils'
 import {
   nextState,
@@ -76,13 +77,11 @@ class Monitor {
       'message',
     )
 
-    const messageDingDong$ = wechatyMessage$.pipe(
+    const messageDong$ = wechatyMessage$.pipe(
       mergeMap(toMessage$(this.message.wechaty)),
       filter(sameRoom(this.message)),
-      filter(isText([
-        this.options.ding,
-        this.options.dong,
-      ])),
+      filter(isNotSelf),
+      filter(isText(this.options.dong)),
     )
 
     const ding = async (v: undefined | Message) => {
@@ -91,7 +90,7 @@ class Monitor {
       }
     }
     const timer$ = timer(this.options.timeout * 1000)
-    const state$ = messageDingDong$.pipe(
+    const state$ = messageDong$.pipe(
       startWith(undefined),
       tap(ding),
       scan(nextState, Promise.resolve(initialState)),

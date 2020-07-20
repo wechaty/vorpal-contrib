@@ -3,39 +3,17 @@
  *  Huan <zixia@zixia.net>
  */
 import {
-  timer,
-  fromEvent,
-  from,
-}               from 'rxjs'
-import {
-  scan,
-  mergeMap,
-  takeUntil,
-  startWith,
-  filter,
+  first,
 }               from 'rxjs/operators'
 
 import {
   log,
 }                       from 'wechaty'
 import {
-  EventMessagePayload,
-}                       from 'wechaty-puppet'
-import {
   CommandContext,
   Args,
 }                   from 'wechaty-vorpal'
 
-import {
-  nextState,
-  initialState,
-}                     from './reducer'
-import {
-  toMessage$,
-  inRoom,
-  isText,
-  isNotSelf,
-}                     from './utils'
 import { Reporter }   from './reporter'
 import { Monitor }    from './monitor'
 
@@ -56,8 +34,8 @@ async function action (
     ...args.options,
   }
 
-  const reporter = new Reporter(normalizedOptions, this.message)
-  const monitor  = new Monitor(normalizedOptions, this.message)
+  const monitor  = new Monitor(normalizedOptions, this.message, this.stdout)
+  const reporter = new Reporter(normalizedOptions, this.message, monitor)
 
   if (normalizedOptions.summary) {
     this.stdout.next(reporter.summaryAll())
@@ -111,25 +89,13 @@ async function action (
     return 0
   }
 
-  const message$ = fromEvent<EventMessagePayload>(this.wechaty.puppet, 'message')
-  const timeout$ = timer(normalizedOptions.timeout * 1000)
-
-  const ddr$ = message$.pipe(
-    mergeMap(toMessage$(this.wechaty)),
-    filter(inRoom(this.message.room())),
-    filter(isText(normalizedOptions.dong)),
-    filter(isNotSelf),
-    startWith(undefined),
-    scan(nextState, Promise.resolve(initialState)),
-    mergeMap(v => from(v)), // await promise for `v`
-    takeUntil(timeout$),
-  )
-
   try {
-    const future = ddr$.toPromise()
+    const future = monitor.state$()
+      .pipe(first())
+      .toPromise()
     this.stdout.next(normalizedOptions.ding)
-    const state = await future
 
+    const state = await future
     reporter.record(state)
     this.stdout.next(reporter.summary(state))
     // this.stdout.next(reporter.summaryAll())

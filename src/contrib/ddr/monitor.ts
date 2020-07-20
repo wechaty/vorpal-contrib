@@ -25,9 +25,8 @@ import {
 import { Reporter } from './reporter'
 import {
   toMessage$,
-  inRoom,
+  sameRoom,
   isText,
-  isNotSelf,
 }                     from './utils'
 import {
   nextState,
@@ -36,6 +35,7 @@ import {
 import {
   DdrOptions,
 }                   from './ddr'
+import { ObsIo } from 'wechaty-vorpal'
 
 interface MonitorStore {
   [id: string]: {
@@ -52,8 +52,8 @@ class Monitor {
   constructor (
     protected options: DdrOptions,
     protected message: Message,
+    protected stdout: ObsIo['stdout'],
   ) {
-
   }
 
   id () {
@@ -72,6 +72,40 @@ class Monitor {
     return true
   }
 
+  state$ () {
+    const wechatyMessage$ = fromEvent<EventMessagePayload>(
+      this.message.wechaty.puppet,
+      'message',
+    )
+
+    const message$ = wechatyMessage$.pipe(
+      mergeMap(toMessage$(this.message.wechaty)),
+      filter(sameRoom(this.message)),
+    )
+    const messageDing$ = message$.pipe(
+      filter(isText(this.options.ding)),
+    )
+    const messageDong$ = message$.pipe(
+      filter(isText(this.options.dong)),
+    )
+
+    const state$ = messageDing$.pipe(
+      mergeMap(messageDing => {
+        const timeout$ = timer(this.options.timeout * 1000)
+        return messageDong$.pipe(
+          startWith(messageDing),
+          startWith(undefined),
+          scan(nextState, Promise.resolve(initialState)),
+          mergeMap(v => from(v)), // resolve the Promise
+          takeUntil(timeout$),
+          takeLast(1),
+        )
+      })
+    )
+
+    return state$
+  }
+
   start (interval: true | number | string): boolean {
     log.verbose('Monitor', 'start(%s)', interval || '')
 
@@ -82,38 +116,17 @@ class Monitor {
     Monitor.store[this.id()] = {}
     const storeItem = Monitor.store[this.id()]
 
-    const wechatyMessage$ = fromEvent<EventMessagePayload>(this.message.wechaty.puppet, 'message')
-
-    const message$ = wechatyMessage$.pipe(
-      mergeMap(toMessage$(this.message.wechaty)),
-      filter(inRoom(this.message.room())),
-    )
-    const messageDing$ = message$.pipe(
-      filter(isText(this.options.ding)),
-    )
-    const messageDong$ = message$.pipe(
-      filter(isText(this.options.dong)),
-    )
-
-    const monitor$ = messageDing$.pipe(
-      mergeMap(_ => {
-        const timeout$ = timer(this.options.timeout * 1000)
-        return messageDong$.pipe(
-          filter(isNotSelf),
-          startWith(undefined),
-          scan(nextState, Promise.resolve(initialState)),
-          mergeMap(v => from(v)),
-          takeUntil(timeout$),
-          takeLast(1),
-        )
-      })
-    )
-
     const reporter = new Reporter(this.options, this.message)
 
-    storeItem.sub = monitor$.subscribe(
-      state => reporter.record(state)
-    )
+    if (storeItem.sub) {
+      throw new Error('can not start: existing subscription found')
+    }
+
+    storeItem.sub = this.state$().subscribe(state => {
+      reporter.record(state)
+      this.stdout.next(reporter.summary(state))
+      this.stdout.next(reporter.summaryAll())
+    })
 
     /**
      *

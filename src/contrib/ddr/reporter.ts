@@ -205,8 +205,12 @@ class Reporter {
 
   summary (state: State): string {
     const description = this.describe(state)
+    const store = new Store(this.message)
+    const ddrStore = store.get()
+
     return [
       `Record: (${moment().format('lll')})`,
+      `Timeout: ${ddrStore.monitor.timeout}`,
       '',
       description,
       '',

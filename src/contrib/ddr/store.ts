@@ -6,6 +6,7 @@ interface DdrStore {
   stateList: State[],
   monitor: {
     timer?    : NodeJS.Timer,
+    timeout?  : number | string,
     interval? : string,
   }
 }

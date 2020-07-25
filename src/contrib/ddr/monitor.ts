@@ -199,6 +199,7 @@ class Monitor {
         intervalSeconds * 1000,
       )
 
+      store.timeout = this.options.timeout
     }
     return true
   }
@@ -217,6 +218,10 @@ class Monitor {
     if (store.interval) {
       delete store.interval
     }
+    if (store.timeout) {
+      delete store.timeout
+    }
+
     return true
   }
 

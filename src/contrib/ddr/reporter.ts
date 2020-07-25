@@ -7,8 +7,9 @@ import {
 }                   from './reducer'
 import { Monitor } from './monitor'
 import { Message } from 'wechaty'
-import { DdrOptions, DEFAULT_OPTIONS } from './ddr'
-import { Store } from './store'
+
+import { DdrOptions } from './ddr'
+import { Store }      from './store'
 
 class Reporter {
 

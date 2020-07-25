@@ -53,6 +53,7 @@ async function action (
     monitor.start(normalizedOptions.monitor)
     const list = [
       'DDR monitor started.',
+      `Timeout: ${normalizedOptions.timeout}`,
     ]
     if (typeof normalizedOptions.monitor !== 'boolean') {
       list.push(`Schedule tests every ${normalizedOptions.monitor}`)

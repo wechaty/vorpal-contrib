@@ -7,7 +7,7 @@ import {
 }                   from './reducer'
 import { Monitor } from './monitor'
 import { Message } from 'wechaty'
-import { DdrOptions } from './ddr'
+import { DdrOptions, DEFAULT_OPTIONS } from './ddr'
 import { Store } from './store'
 
 class Reporter {
@@ -210,7 +210,7 @@ class Reporter {
 
     return [
       `Record: (${moment().format('lll')})`,
-      `Timeout: ${ddrStore.monitor.timeout}`,
+      `Timeout: ${ddrStore.monitor.timeout || DEFAULT_OPTIONS.timeout}`,
       '',
       description,
       '',

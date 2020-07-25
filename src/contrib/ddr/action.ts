@@ -92,7 +92,7 @@ async function action (
 
   } catch (e) {
     log.error('WechatyVorpalContrib', 'Ddr() ddr$.toPromise() rejection %s', e)
-    console.error(e)
+    console.error(e.stack)
     return 1
   }
 

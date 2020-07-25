@@ -37,17 +37,15 @@ import {
 import {
   DdrOptions,
 }                   from './ddr'
-
-interface MonitorStore {
-  [id: string]: {
-    timer?    : NodeJS.Timer,
-    interval? : string,
-  }
-}
+import { Store } from './store'
 
 class Monitor {
 
-  static store: MonitorStore  = {}
+  protected store () {
+    const store = new Store(this.message)
+    const ddrStore = store.get()
+    return ddrStore.monitor
+  }
 
   constructor (
     protected options: DdrOptions,
@@ -55,18 +53,14 @@ class Monitor {
   ) {
   }
 
-  id () {
-    return `${this.message.talker().id}#${this.message.room()?.id}`
-  }
-
   busy (): boolean | string {
-    const item = Monitor.store[this.id()]
+    const store = this.store()
 
-    if (!item) {
+    if (!store.timer) {
       return false
     }
-    if (item.interval) {
-      return item.interval
+    if (store.interval) {
+      return store.interval
     }
     return true
   }
@@ -168,9 +162,7 @@ class Monitor {
       return false
     }
 
-    Monitor.store[this.id()] = {}
-    const storeItem = Monitor.store[this.id()]
-
+    const store = this.store()
     /**
      *
      * Setup schedule testing interval numbers
@@ -181,13 +173,13 @@ class Monitor {
       let intervalSeconds = 60 * 60  // default 1 hour1
 
       if (typeof interval === 'number') {
-        storeItem.interval = interval + 's'
+        store.interval = interval + 's'
 
         if (interval > 10) {
           intervalSeconds = interval
         }
       } else if (typeof interval === 'string') {
-        storeItem.interval = interval
+        store.interval = interval
 
         const match = interval.match(/^(\d+)(\w*)$/)
 
@@ -205,7 +197,7 @@ class Monitor {
 
       log.verbose('Monitor', 'start() interval "%s" resolved to %s seconds', interval, intervalSeconds)
 
-      storeItem.timer = setInterval(
+      store.timer = setInterval(
         async () => { await this.ddr() },
         intervalSeconds * 1000,
       )
@@ -219,13 +211,14 @@ class Monitor {
       return false
     }
 
-    const storeItem = Monitor.store[this.id()]
-    if (storeItem) {
-      if (storeItem.timer) {
-        clearInterval(storeItem.timer)
-        storeItem.timer = undefined
-      }
-      delete Monitor.store[this.id()]
+    const store = this.store()
+
+    if (store.timer) {
+      clearInterval(store.timer)
+      delete store.timer
+    }
+    if (store.interval) {
+      delete store.interval
     }
     return true
   }

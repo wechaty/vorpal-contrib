@@ -8,15 +8,15 @@ import {
 import { Monitor } from './monitor'
 import { Message } from 'wechaty'
 import { DdrOptions } from './ddr'
+import { Store } from './store'
 
 class Reporter {
 
-  static stateList: State[] = []
-
   protected get stateList () {
-    // https://stackoverflow.com/a/29244254/1123955
-    const Klass = this.constructor as typeof Reporter
-    return Klass.stateList
+    const store = new Store(this.message)
+    const ddrStore = store.get()
+
+    return ddrStore.stateList
   }
 
   constructor (

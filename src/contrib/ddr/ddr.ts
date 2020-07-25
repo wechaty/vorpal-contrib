@@ -25,7 +25,7 @@ export interface DdrOptions {
   ding       : string,
   dong       : string,
 
-  timeout    : number,
+  timeout    : number | string,
   summary?   : boolean,
   reset?     : boolean,
 

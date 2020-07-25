@@ -1,4 +1,3 @@
-import moment from 'moment'
 import {
   timer,
   fromEvent,
@@ -28,6 +27,7 @@ import {
   sameRoom,
   isText,
   isNotSelf,
+  toSeconds,
 }                     from './utils'
 import {
   nextState,
@@ -83,7 +83,12 @@ class Monitor {
         await this.message.say(this.options.ding)
       }
     }
-    const timer$ = timer(this.options.timeout * 1000)
+
+    const timeout = typeof this.options.timeout === 'string'
+      ? toSeconds(this.options.timeout)
+      : this.options.timeout
+
+    const timer$ = timer(timeout * 1000)
     const state$ = messageDong$.pipe(
       startWith(undefined),
       tap(ding),
@@ -138,9 +143,13 @@ class Monitor {
       filter(isText(this.options.dong)),
     )
 
+    const timeout = typeof this.options.timeout === 'string'
+      ? toSeconds(this.options.timeout)
+      : this.options.timeout
+
     const state$ = messageDing$.pipe(
       mergeMap(messageDing => {
-        const timeout$ = timer(this.options.timeout * 1000)
+        const timeout$ = timer(timeout * 1000)
         return messageDong$.pipe(
           startWith(messageDing),
           startWith(undefined),
@@ -180,19 +189,7 @@ class Monitor {
         }
       } else if (typeof interval === 'string') {
         store.interval = interval
-
-        const match = interval.match(/^(\d+)(\w*)$/)
-
-        if (match) {
-          if (match[2]) {           // '60s'
-            intervalSeconds = moment.duration(
-              parseInt(match[1], 10),
-              match[2] as any,
-            ).asSeconds()
-          } else {                  // '60'
-            intervalSeconds = parseInt(match[1], 10)
-          }
-        }
+        intervalSeconds = toSeconds(interval)
       }
 
       log.verbose('Monitor', 'start() interval "%s" resolved to %s seconds', interval, intervalSeconds)

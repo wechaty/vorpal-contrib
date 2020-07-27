@@ -48,8 +48,8 @@
     "pkg-jq": "^0.2.4",
     "shx": "^0.3.2",
     "tstest": "^0.4.10",
-    "wechaty": "^0.43.5",
     "wechaty-puppet-mock": "^0.27.5",
+    "wechaty": "^0.45.2",
     "wechaty-vorpal": "^0.6.4"
   },
   "dependencies": {

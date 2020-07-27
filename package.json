@@ -49,7 +49,7 @@
     "shx": "^0.3.2",
     "tstest": "^0.4.10",
     "wechaty": "^0.43.5",
-    "wechaty-puppet-mock": "^0.25.1",
+    "wechaty-puppet-mock": "^0.27.5",
     "wechaty-vorpal": "^0.6.4"
   },
   "dependencies": {

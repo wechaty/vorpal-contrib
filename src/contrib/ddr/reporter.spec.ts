@@ -2,7 +2,7 @@
 
 import test  from 'tstest'
 
-import { createFixture } from 'wechaty'
+import { createFixture } from 'wechaty-mocker'
 
 import { Reporter } from './reporter'
 import { DEFAULT_OPTIONS } from './ddr'
@@ -20,12 +20,12 @@ class ReporterTest extends Reporter {
 
 test('Reporter sum()', async t => {
   for await (const fixture of createFixture()) {
-    const store = new Store(fixture.message)
+    const store = new Store(fixture.wechaty.message)
     const ddrStore = store.get()
 
     const reporter = new ReporterTest(
       DEFAULT_OPTIONS,
-      fixture.message,
+      fixture.wechaty.message,
     )
 
     ddrStore.stateList.push(...[
@@ -61,12 +61,12 @@ test('Reporter sum()', async t => {
 
 test('Reporter average()', async t => {
   for await (const fixture of createFixture()) {
-    const store = new Store(fixture.message)
+    const store = new Store(fixture.wechaty.message)
     const ddrStore = store.get()
 
     const reporter = new ReporterTest(
       DEFAULT_OPTIONS,
-      fixture.message,
+      fixture.wechaty.message,
     )
 
     ddrStore.stateList.push(...[
@@ -101,12 +101,12 @@ test('Reporter average()', async t => {
 
 test('Reporter idCounterDict()', async t => {
   for await (const fixture of createFixture()) {
-    const store = new Store(fixture.message)
+    const store = new Store(fixture.wechaty.message)
     const ddrStore = store.get()
 
     const reporter = new ReporterTest(
       DEFAULT_OPTIONS,
-      fixture.message,
+      fixture.wechaty.message,
     )
 
     ddrStore.stateList.push(...[
@@ -134,12 +134,12 @@ test('Reporter idCounterDict()', async t => {
 
 test('Reporter ddrRateDict()', async t => {
   for await (const fixture of createFixture()) {
-    const store = new Store(fixture.message)
+    const store = new Store(fixture.wechaty.message)
     const ddrStore = store.get()
 
     const reporter = new ReporterTest(
       DEFAULT_OPTIONS,
-      fixture.message,
+      fixture.wechaty.message,
     )
 
     ddrStore.stateList.push(...[
@@ -167,12 +167,12 @@ test('Reporter ddrRateDict()', async t => {
 
 test('Reporter ddrRateAll()', async t => {
   for await (const fixture of createFixture()) {
-    const store = new Store(fixture.message)
+    const store = new Store(fixture.wechaty.message)
     const ddrStore = store.get()
 
     const reporter = new ReporterTest(
       DEFAULT_OPTIONS,
-      fixture.message,
+      fixture.wechaty.message,
     )
 
     // console.info('stateList', ReporterTest.stateList)
@@ -205,12 +205,12 @@ test('Reporter ddrRateAll()', async t => {
 
 test('Reporter ddrRateSigma()', async t => {
   for await (const fixture of createFixture()) {
-    const store = new Store(fixture.message)
+    const store = new Store(fixture.wechaty.message)
     const ddrStore = store.get()
 
     const reporter = new ReporterTest(
       DEFAULT_OPTIONS,
-      fixture.message,
+      fixture.wechaty.message,
     )
 
     // console.info('stateList', ReporterTest.stateList)
@@ -261,12 +261,12 @@ test('Reporter ddrRateSigma()', async t => {
 
 test('Reporter reset()', async t => {
   for await (const fixture of createFixture()) {
-    const store = new Store(fixture.message)
+    const store = new Store(fixture.wechaty.message)
     const ddrStore = store.get()
 
     const reporter = new ReporterTest(
       DEFAULT_OPTIONS,
-      fixture.message,
+      fixture.wechaty.message,
     )
 
     ddrStore.stateList.push(...[

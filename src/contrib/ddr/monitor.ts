@@ -12,7 +12,6 @@ import {
   takeLast,
   tap,
 }               from 'rxjs/operators'
-
 import {
   Message,
   log,
@@ -37,7 +36,7 @@ import {
 import {
   DdrOptions,
 }                   from './ddr'
-import { Store } from './store'
+import { Store }    from './store'
 
 class Monitor {
 
@@ -67,7 +66,8 @@ class Monitor {
 
   ddr$ (): Promise<State> {
     const wechatyMessage$ = fromEvent<EventMessagePayload>(
-      this.message.wechaty.puppet,
+      // FIXME(huan): https://github.com/andywer/typed-emitter/issues/9
+      this.message.wechaty.puppet as any,
       'message',
     )
 
@@ -128,7 +128,8 @@ class Monitor {
    */
   passiveState$ () {
     const wechatyMessage$ = fromEvent<EventMessagePayload>(
-      this.message.wechaty.puppet,
+      // FIXME(huan): https://github.com/andywer/typed-emitter/issues/9
+      this.message.wechaty.puppet as any,
       'message',
     )
 

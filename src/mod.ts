@@ -1,7 +1,7 @@
 export {
   WechatyVorpalConfig,
 }                       from './config'
-export { VERSION }      from './version'
+export { VERSION }       from './version'
 
 export {
   MathMaster,
@@ -11,9 +11,9 @@ export {
   Ddr,
   DdrConfig,
 }                     from './contrib/ddr/mod'
+export { Eval }       from './contrib/eval/mod'
 
 export { Ding }       from './contrib/ding'
-export { Eval }       from './contrib/eval'
 export {
   Cash,
   CashConfig,

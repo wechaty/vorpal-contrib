@@ -24,11 +24,16 @@ export interface DdrConfig extends WechatyVorpalConfig {}
 export interface DdrOptions {
   ding       : string,
   dong       : string,
-  timeout    : number,
+
+  timeout    : number | string,
   summary?   : boolean,
   reset?     : boolean,
+
   monitor?   : boolean | number | string,
   unmonitor? : boolean,
+
+  ignore?   : boolean | string,
+  unignore? : boolean | string,
 }
 
 const DEFAULT_OPTIONS: DdrOptions = {
@@ -50,8 +55,13 @@ function Ddr (config: DdrConfig = {}) {
       .option('-d --ding <ding>', 'Define the message for sending. (default `ding`)')
       .option('-D --dong <dong>', 'Define the expected message for receiving. (default `dong`)')
       .option('-t --timeout <timeout>', `Define the maximum seconds for waiting a dong after ding. (default ${DEFAULT_TIMEOUT}s)`)
+
       .option('-m --monitor [interval seconds]', 'Monitor the DDR in the background (specific an interval seconds to schedule tests)')
-      .option('-u --unmonitor', 'Unmonitor the DDR in the background')
+      .option('-M --unmonitor', 'Unmonitor the DDR in the background')
+
+      .option('-i --ignore [@bot]', 'TBW: Ignore bot when calc DDR')
+      .option('-I --unignore [@bot]', 'TBW: Unignore bot when calc DDR')
+
       .option('-s --summary', 'Summary the DDR status')
       .option('-r --reset', 'Reset all DDR data that received')
       .action(action)

@@ -6,8 +6,10 @@ import {
 
 import {
   Message,
-  createFixture,
 }                   from 'wechaty'
+import {
+  createFixture,
+}                   from 'wechaty-mocker'
 import {
   mock,
 }                   from 'wechaty-puppet-mock'
@@ -16,7 +18,7 @@ import {
 }                   from 'wechaty-vorpal'
 
 import { Ddr }      from './ddr'
-import { Reporter } from './reporter'
+import { Store }    from './store'
 
 test('ddr', async t => {
   for await (const fixture of createFixture()) {
@@ -29,13 +31,13 @@ test('ddr', async t => {
       use  : Ddr(),
     })
 
-    fixture.wechaty.use(WechatyVorpalPlugin)
+    fixture.wechaty.wechaty.use(WechatyVorpalPlugin)
 
-    const botList = fixture.mocker.createContacts(3)
-    const room = fixture.mocker.createRoom({
+    const botList = fixture.mocker.mocker.createContacts(3)
+    const room = fixture.mocker.mocker.createRoom({
       memberIdList: [
-        fixture.bot.id,
-        fixture.player.id,
+        fixture.mocker.bot.id,
+        fixture.mocker.player.id,
         ...botList.map(b => b.id),
       ],
     })
@@ -50,10 +52,10 @@ test('ddr', async t => {
     }
     room.on('message', onMessage)
 
-    const summaryFuture = expectSummary(room)
-    // const summaryAllFuture = expectSummaryAll(room)
+    const summaryFuture = expectSummaryAll(room)
+    // const mocker.summaryAllFuture = expectSummaryAll(room)
 
-    fixture.player.say('ddr').to(room)
+    fixture.mocker.player.say('ddr').to(room)
 
     const summary = await summaryFuture
     // const summaryAll = await summaryAllFuture
@@ -62,17 +64,19 @@ test('ddr', async t => {
     // t.true(summaryAll, 'should get summaryAll')
 
     await new Promise(setImmediate)
+    await new Promise(resolve => setTimeout(resolve, 100))
 
-    Reporter.stateList.length = 0
+    const store = new Store(fixture.wechaty.message)
+    store.clear(true)
   }
 })
 
-function expectSummary (room: mock.RoomMock) {
+function expectSummaryAll (room: mock.RoomMock) {
   return  new Promise<string>(resolve => {
     const onMessage = (message: mock.MessageMock) => {
       if (message.type() !== Message.Type.Text) { return }
       const text = message.text() || ''
-      if (!/Record/i.test(text))                { return }
+      if (!/History Summary/i.test(text))       { return }
 
       resolve(text)
       room.off('message', onMessage)

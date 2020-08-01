@@ -3,38 +3,13 @@
  *  Huan <zixia@zixia.net>
  */
 import {
-  timer,
-  fromEvent,
-  from,
-}               from 'rxjs'
-import {
-  scan,
-  mergeMap,
-  takeUntil,
-  startWith,
-  filter,
-}               from 'rxjs/operators'
-
-import {
   log,
 }                       from 'wechaty'
-import {
-  EventMessagePayload,
-}                       from 'wechaty-puppet'
 import {
   CommandContext,
   Args,
 }                   from 'wechaty-vorpal'
 
-import {
-  nextState,
-  initialState,
-}                     from './reducer'
-import {
-  toMessage$,
-  inRoom,
-  isText,
-}                     from './utils'
 import { Reporter }   from './reporter'
 import { Monitor }    from './monitor'
 
@@ -55,8 +30,8 @@ async function action (
     ...args.options,
   }
 
-  const reporter = new Reporter(normalizedOptions, this.message)
   const monitor  = new Monitor(normalizedOptions, this.message)
+  const reporter = new Reporter(normalizedOptions, this.message, monitor)
 
   if (normalizedOptions.summary) {
     this.stdout.next(reporter.summaryAll())
@@ -78,6 +53,7 @@ async function action (
     monitor.start(normalizedOptions.monitor)
     const list = [
       'DDR monitor started.',
+      `Timeout: ${normalizedOptions.timeout}`,
     ]
     if (typeof normalizedOptions.monitor !== 'boolean') {
       list.push(`Schedule tests every ${normalizedOptions.monitor}`)
@@ -100,33 +76,24 @@ async function action (
     return 0
   }
 
-  const message$ = fromEvent<EventMessagePayload>(this.wechaty.puppet, 'message')
-  const timeout$ = timer(normalizedOptions.timeout * 1000)
+  if (normalizedOptions.ignore) {
+    this.stdout.next(JSON.stringify(args))
+    return 0
+  }
 
-  const ddr$ = message$.pipe(
-    mergeMap(toMessage$(this.wechaty)),
-    filter(inRoom(this.message.room())),
-    filter(isText(normalizedOptions.dong)),
-    startWith(undefined),
-    scan(nextState, Promise.resolve(initialState)),
-    mergeMap(v => from(v)), // await promise for `v`
-    takeUntil(timeout$),
-  )
+  if (normalizedOptions.unignore) {
+    this.stdout.next(JSON.stringify(args))
+    return 0
+  }
 
   try {
-    const future = ddr$.toPromise()
-    this.stdout.next(normalizedOptions.ding)
-    const state = await future
-
-    reporter.record(state)
-    this.stdout.next(reporter.summary(state))
-    // this.stdout.next(reporter.summaryAll())
+    await monitor.ddr()
 
     return 0
 
   } catch (e) {
     log.error('WechatyVorpalContrib', 'Ddr() ddr$.toPromise() rejection %s', e)
-    console.error(e)
+    console.error(e.stack)
     return 1
   }
 

@@ -1,9 +1,7 @@
-import moment from 'moment'
 import {
   timer,
   fromEvent,
   from,
-  Subscription,
 }               from 'rxjs'
 import {
   scan,
@@ -12,8 +10,8 @@ import {
   startWith,
   filter,
   takeLast,
+  tap,
 }               from 'rxjs/operators'
-
 import {
   Message,
   log,
@@ -25,50 +23,146 @@ import {
 import { Reporter } from './reporter'
 import {
   toMessage$,
-  inRoom,
+  sameRoom,
   isText,
+  isNotSelf,
+  toSeconds,
 }                     from './utils'
 import {
   nextState,
   initialState,
+  State,
 }                   from './reducer'
 import {
   DdrOptions,
 }                   from './ddr'
-
-interface MonitorStore {
-  [id: string]: {
-    sub?      : Subscription
-    timer?    : NodeJS.Timer,
-    interval? : string,
-  }
-}
+import { Store }    from './store'
 
 class Monitor {
 
-  static store: MonitorStore  = {}
+  protected store () {
+    const store = new Store(this.message)
+    const ddrStore = store.get()
+    return ddrStore.monitor
+  }
 
   constructor (
     protected options: DdrOptions,
     protected message: Message,
   ) {
-
-  }
-
-  id () {
-    return `${this.message.talker().id}#${this.message.room()?.id}`
   }
 
   busy (): boolean | string {
-    const item = Monitor.store[this.id()]
+    const store = this.store()
 
-    if (!item) {
+    if (!store.timer) {
       return false
     }
-    if (item.interval) {
-      return item.interval
+    if (store.interval) {
+      return store.interval
     }
     return true
+  }
+
+  ddr$ (): Promise<State> {
+    const wechatyMessage$ = fromEvent<EventMessagePayload>(
+      // FIXME(huan): https://github.com/andywer/typed-emitter/issues/9
+      this.message.wechaty.puppet as any,
+      'message',
+    )
+
+    const messageDong$ = wechatyMessage$.pipe(
+      mergeMap(toMessage$(this.message.wechaty)),
+      filter(sameRoom(this.message)),
+      filter(isNotSelf),
+      filter(isText(this.options.dong)),
+    )
+
+    const ding = async (v: undefined | Message) => {
+      if (typeof v === 'undefined') {
+        await this.message.say(this.options.ding)
+      }
+    }
+
+    const timeout = typeof this.options.timeout === 'string'
+      ? toSeconds(this.options.timeout)
+      : this.options.timeout
+
+    const timer$ = timer(timeout * 1000)
+    const state$ = messageDong$.pipe(
+      startWith(undefined),
+      tap(ding),
+      scan(nextState, Promise.resolve(initialState)),
+      mergeMap(v => from(v)), // resolve the Promise
+      takeUntil(timer$),
+      takeLast(1),
+    )
+
+    return state$.toPromise()
+  }
+
+  async ddr (): Promise<void> {
+    const reporter = new Reporter(this.options, this.message, this)
+
+    const state = await this.ddr$()
+
+    reporter.record(state)
+
+    await this.message.say(reporter.summary(state))
+    await this.message.wechaty.sleep(1000)
+
+    const missing = reporter.summaryMissing(state)
+    if (missing) {
+      await this.message.say(missing)
+    }
+
+    await this.message.wechaty.sleep(1000)
+    await this.message.say(reporter.summaryAll())
+  }
+
+  /**
+   * Huan(202007): This method has limitations when the bot is running on a slow network/machine
+   *
+   *  When we got a `ding` message, there might not be enough time to start another listener to get the `dong` messages,
+   *  so there will have a very high probability that we will miss the `dong` message counting.
+   */
+  passiveState$ () {
+    const wechatyMessage$ = fromEvent<EventMessagePayload>(
+      // FIXME(huan): https://github.com/andywer/typed-emitter/issues/9
+      this.message.wechaty.puppet as any,
+      'message',
+    )
+
+    const message$ = wechatyMessage$.pipe(
+      mergeMap(toMessage$(this.message.wechaty)),
+      filter(sameRoom(this.message)),
+    )
+    const messageDing$ = message$.pipe(
+      filter(isText(this.options.ding)),
+    )
+    const messageDong$ = message$.pipe(
+      filter(isText(this.options.dong)),
+    )
+
+    const timeout = typeof this.options.timeout === 'string'
+      ? toSeconds(this.options.timeout)
+      : this.options.timeout
+
+    const state$ = messageDing$.pipe(
+      mergeMap(messageDing => {
+        const timeout$ = timer(timeout * 1000)
+        return messageDong$.pipe(
+          startWith(messageDing),
+          startWith(undefined),
+          scan(nextState, Promise.resolve(initialState)),
+          mergeMap(v => from(v)), // resolve the Promise
+          takeUntil(timeout$),
+          takeLast(1),
+        )
+      })
+    )
+
+    return state$
   }
 
   start (interval: true | number | string): boolean {
@@ -78,41 +172,7 @@ class Monitor {
       return false
     }
 
-    Monitor.store[this.id()] = {}
-    const storeItem = Monitor.store[this.id()]
-
-    const wechatyMessage$ = fromEvent<EventMessagePayload>(this.message.wechaty.puppet, 'message')
-
-    const message$ = wechatyMessage$.pipe(
-      mergeMap(toMessage$(this.message.wechaty)),
-      filter(inRoom(this.message.room())),
-    )
-    const messageDing$ = message$.pipe(
-      filter(isText(this.options.ding)),
-    )
-    const messageDong$ = message$.pipe(
-      filter(isText(this.options.dong)),
-    )
-
-    const monitor$ = messageDing$.pipe(
-      mergeMap(_ => {
-        const timeout$ = timer(this.options.timeout * 1000)
-        return messageDong$.pipe(
-          startWith(undefined),
-          scan(nextState, Promise.resolve(initialState)),
-          mergeMap(v => from(v)),
-          takeUntil(timeout$),
-          takeLast(1),
-        )
-      })
-    )
-
-    const reporter = new Reporter(this.options, this.message)
-
-    storeItem.sub = monitor$.subscribe(
-      state => reporter.record(state)
-    )
-
+    const store = this.store()
     /**
      *
      * Setup schedule testing interval numbers
@@ -123,35 +183,24 @@ class Monitor {
       let intervalSeconds = 60 * 60  // default 1 hour1
 
       if (typeof interval === 'number') {
-        storeItem.interval = interval + 's'
+        store.interval = interval + 's'
 
         if (interval > 10) {
           intervalSeconds = interval
         }
       } else if (typeof interval === 'string') {
-        storeItem.interval = interval
-
-        const match = interval.match(/^(\d+)(\w*)$/)
-
-        if (match) {
-          if (match[2]) {           // '60s'
-            intervalSeconds = moment.duration(
-              parseInt(match[1], 10),
-              match[2] as any,
-            ).asSeconds()
-          } else {                  // '60'
-            intervalSeconds = parseInt(match[1], 10)
-          }
-        }
+        store.interval = interval
+        intervalSeconds = toSeconds(interval)
       }
 
       log.verbose('Monitor', 'start() interval "%s" resolved to %s seconds', interval, intervalSeconds)
 
-      storeItem.timer = setInterval(
-        () => this.message.say(this.options.ding),
+      store.timer = setInterval(
+        async () => { await this.ddr() },
         intervalSeconds * 1000,
       )
 
+      store.timeout = this.options.timeout
     }
     return true
   }
@@ -161,18 +210,19 @@ class Monitor {
       return false
     }
 
-    const storeItem = Monitor.store[this.id()]
-    if (storeItem) {
-      if (storeItem.sub) {
-        storeItem.sub.unsubscribe()
-        storeItem.sub = undefined
-      }
-      if (storeItem.timer) {
-        clearInterval(storeItem.timer)
-        storeItem.timer = undefined
-      }
-      delete Monitor.store[this.id()]
+    const store = this.store()
+
+    if (store.timer) {
+      clearInterval(store.timer)
+      delete store.timer
     }
+    if (store.interval) {
+      delete store.interval
+    }
+    if (store.timeout) {
+      delete store.timeout
+    }
+
     return true
   }
 

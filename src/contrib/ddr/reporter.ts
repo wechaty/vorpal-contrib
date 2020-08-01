@@ -7,21 +7,23 @@ import {
 }                   from './reducer'
 import { Monitor } from './monitor'
 import { Message } from 'wechaty'
+
 import { DdrOptions } from './ddr'
+import { Store }      from './store'
 
 class Reporter {
 
-  static stateList: State[] = []
-
   protected get stateList () {
-    // https://stackoverflow.com/a/29244254/1123955
-    const Klass = this.constructor as typeof Reporter
-    return Klass.stateList
+    const store = new Store(this.message)
+    const ddrStore = store.get()
+
+    return ddrStore.stateList
   }
 
   constructor (
     protected options: DdrOptions,
     protected message: Message,
+    protected monitor?: Monitor,
   ) {
   }
 
@@ -134,7 +136,48 @@ class Reporter {
     this.stateList.length = 0
   }
 
-  ddrRate (): number {
+  ddrRateSigma (): number {
+    const botNum = this.idList().length
+    if (botNum < 3) {
+      return this.ddrRateAll()
+    }
+
+    /**
+     * 68–95–99.7 rule
+     *  https://en.wikipedia.org/wiki/68%E2%80%9395%E2%80%9399.7_rule
+     *
+     *  Only keep one Sigma in the middle of the performance ranking list
+     *    to get a sample out
+     */
+    const removeNum = Math.ceil((1 - 0.6827) * botNum  / 2)
+    // console.info('botNum', botNum)
+    // console.info('removeNum', removeNum)
+
+    let idCounterList = Object.entries(this.idCounterDict()).sort(
+      (a: any, b: any) => a[1] - b[1]
+    )
+
+    idCounterList = idCounterList.slice(removeNum, 0 - removeNum)
+
+    const totalDingNum = Math.max(0, ...idCounterList.map(ic => ic[1]))
+    // console.info('totalDingNum', totalDingNum)
+    // console.info('botNum', botNum)
+
+    const expectedDongNum = (botNum - 2 * removeNum) * totalDingNum
+
+    const actualDongNum = idCounterList.map(ic => ic[1])
+      .reduce((acc, cur) => acc + (cur ?? 0), 0)
+    // console.info('expectedDongNum', expectedDongNum)
+
+    if (expectedDongNum <= 0) {
+      return 0
+    }
+
+    const ddr = actualDongNum / expectedDongNum
+    return Math.floor(100 * ddr)
+  }
+
+  ddrRateAll (): number {
     const totalDingNum = Math.max(0, ...Object.values(this.idCounterDict()))
     const botNum = this.idList().length
     // console.info('totalDingNum', totalDingNum)
@@ -163,8 +206,10 @@ class Reporter {
 
   summary (state: State): string {
     const description = this.describe(state)
+
     return [
       `Record: (${moment().format('lll')})`,
+      `Timeout: ${this.options.timeout}`,
       '',
       description,
       '',
@@ -172,12 +217,26 @@ class Reporter {
     ].join('\n')
   }
 
+  summaryMissing (state: State): undefined | string {
+    const curBotIdSet = new Set(Object.keys(state.payload))
+
+    let n = 0
+
+    const lostBotNames = Object.keys(this.idCounterDict())
+      .filter(id => !curBotIdSet.has(id))
+      .map(id => this.message.wechaty.Contact.load(id).name())
+      .map(text => `#${--n} ${text}`)
+
+    return lostBotNames.length
+      ? ['Lost:', ...lostBotNames].join('\n')
+      : undefined
+  }
+
   summaryAll (): string {
     const avgState = this.average()
     const avgDescription = this.describeDdr(avgState)
-    const monitor = new Monitor(this.options, this.message)
 
-    const busy = monitor.busy()
+    const busy = this.monitor?.busy() ?? 'OFF'
     const monitorStatus = typeof busy === 'string'
       ? busy
       : busy
@@ -190,7 +249,8 @@ class Reporter {
       avgDescription,
       '',
       `Total ${Object.keys(avgState.payload).length} bots with ${this.stateList.length} DDR tests.`,
-      `Final DDR: ${this.ddrRate()}%`,
+      `Average DDR: ${this.ddrRateAll()}%`,
+      `σ DDR: ${this.ddrRateSigma()}%`,
     ].join('\n')
   }
 

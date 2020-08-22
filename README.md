@@ -79,6 +79,24 @@ import { Eval } from 'wechaty-vorpal-contrib'
 vorpalExtensionList = [ Eval() ]
 ```
 
+#### Eval Example
+
+To remove a member from a room, you can use the following `eval` code to achieve that:
+
+```
+eval
+  const ROOM_TOPIC_RE=/Home 6/i;
+  const MEMBER_NAME_RE=/纸超人/i;
+  const room = await this.wechaty.Room.find({ topic: ROOM_TOPIC_RE });
+  const memberList = await room.memberAll();
+  const bob = memberList.filter(m => MEMBER_NAME_RE.test(m.name()))[0];
+  await room.say("You have violated the code of conduct of our Wechaty Developers's Room, we need to move you out of this room.", bob);
+  await this.wechaty.sleep(5000);
+  await room.say('done');
+  await room.del(bob);
+  await this.log('done');
+```
+
 ### 3 Cash
 
 Cash is a cross-platform implementation of Unix shell commands written in straight ES6. No native compiling and no external dependencies.

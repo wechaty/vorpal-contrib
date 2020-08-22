@@ -83,7 +83,7 @@ vorpalExtensionList = [ Eval() ]
 
 To remove a member from a room, you can use the following `eval` code to achieve that:
 
-```
+```ts
 eval
   const ROOM_TOPIC_RE=/Home 6/i;
   const MEMBER_NAME_RE=/纸超人/i;

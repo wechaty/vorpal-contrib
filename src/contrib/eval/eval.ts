@@ -6,7 +6,8 @@ import {
 }                     from 'wechaty-vorpal'
 import safeStringify  from 'json-stringify-safe'
 
-import { asyncEval } from './async-eval'
+import { asyncEval }            from './async-eval'
+import { normalizeRawCommand }  from './normalize-raw-command'
 
 function Eval () {
   log.verbose('WechatyVorpalContrib', 'Eval()')
@@ -28,7 +29,10 @@ async function evalAction (
   log.verbose('WechatyVorpalContrib', 'Eval("%s")', JSON.stringify(args))
 
   try {
-    const jsCode = (args.code as string[]).join(' ')
+    // const jsCode = (args.code as string[]).join(' ')
+    // https://github.com/wechaty/wechaty-vorpal-contrib/issues/21
+    const jsCode = normalizeRawCommand(args.rawCommand)
+
     log.verbose('WechatyVorpalContrib', 'Eval() jsCode: "%s"', jsCode)
 
     let result: any = await asyncEval.call(this, jsCode)

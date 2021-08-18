@@ -94,7 +94,7 @@ test('math_master', async t => {
   const boardFuture = expectGameBoard(player, bot)
 
   const score = await scoreFuture
-  t.true(score >= 1, 'should play game and get a score')
+  t.ok(score >= 1, 'should play game and get a score')
 
   // console.info('before expectGameBoard')
   await boardFuture
@@ -127,7 +127,7 @@ function expectGameScore (player: mock.ContactMock) {
 }
 
 function expectGameBoard (player: mock.ContactMock, bot: mock.ContactMock) {
-  return  new Promise<number>(resolve => {
+  return  new Promise<void>(resolve => {
     const onMessage = (message: mock.MessageMock) => {
       if (message.type() !== Message.Type.Text) { return }
       const text = message.text() || ''

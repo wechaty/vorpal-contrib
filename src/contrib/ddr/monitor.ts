@@ -2,7 +2,8 @@ import {
   timer,
   fromEvent,
   from,
-}               from 'rxjs'
+  lastValueFrom,
+}                 from 'rxjs'
 import {
   scan,
   mergeMap,
@@ -98,7 +99,7 @@ class Monitor {
       takeLast(1),
     )
 
-    return state$.toPromise()
+    return lastValueFrom(state$)
   }
 
   async ddr (): Promise<void> {

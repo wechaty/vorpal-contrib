@@ -4,6 +4,6 @@ import {
   test,
 }             from 'tstest'
 
-test.skip('integration testing', async (t) => {
-  t.skip('tbw')
+test.skip('integration testing', async t => {
+  await t.skip('tbw')
 })

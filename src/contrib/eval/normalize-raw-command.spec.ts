@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node
 
-import test  from 'tstest'
+import { test } from 'tstest'
 
 import { normalizeRawCommand } from './normalize-raw-command'
 

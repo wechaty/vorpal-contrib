@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node
 
-import test  from 'tstest'
+import { test } from 'tstest'
 
 import { asyncEval } from './async-eval'
 

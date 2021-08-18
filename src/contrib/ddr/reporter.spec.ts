@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node
 
-import test  from 'tstest'
+import { test } from 'tstest'
 
 import { createFixture } from 'wechaty-mocker'
 
@@ -55,7 +55,7 @@ test('Reporter sum()', async t => {
     }
 
     const sumState = reporter.sum()
-    t.deepEqual(sumState, EXPECTED_SUM_STATE, 'should sum all state as expected')
+    t.same(sumState, EXPECTED_SUM_STATE, 'should sum all state as expected')
   }
 })
 
@@ -95,7 +95,7 @@ test('Reporter average()', async t => {
       },
     }
     const avgState = reporter.average()
-    t.deepEqual(avgState, EXPECTED_AVG_STATE, 'should average all state as expected')
+    t.same(avgState, EXPECTED_AVG_STATE, 'should average all state as expected')
   }
 })
 
@@ -128,7 +128,7 @@ test('Reporter idCounterDict()', async t => {
 
     const EXPECTED_COUNTER_DICT = { a: 1, b: 2, c: 1 }
     const dict = reporter.idCounterDict()
-    t.deepEqual(dict, EXPECTED_COUNTER_DICT, 'should get the counter dict as expected')
+    t.same(dict, EXPECTED_COUNTER_DICT, 'should get the counter dict as expected')
   }
 })
 
@@ -161,7 +161,7 @@ test('Reporter ddrRateDict()', async t => {
 
     const EXPECTED_DDR_RATE = { a: 50, b: 100, c: 50 }
     const ddrRate = reporter.ddrRateDict()
-    t.deepEqual(ddrRate, EXPECTED_DDR_RATE, 'should calc the expected ddr rate dict')
+    t.same(ddrRate, EXPECTED_DDR_RATE, 'should calc the expected ddr rate dict')
   }
 })
 
@@ -199,7 +199,7 @@ test('Reporter ddrRateAll()', async t => {
 
     const EXPECTED_DDR_RATE = 66
     ddrRate = reporter.ddrRateAll()
-    t.deepEqual(ddrRate, EXPECTED_DDR_RATE, 'should calc the expected ddr rate')
+    t.same(ddrRate, EXPECTED_DDR_RATE, 'should calc the expected ddr rate')
   }
 })
 
@@ -255,7 +255,7 @@ test('Reporter ddrRateSigma()', async t => {
 
     const EXPECTED_DDR_RATE = 83
     ddrRateSigma = reporter.ddrRateSigma()
-    t.deepEqual(ddrRateSigma, EXPECTED_DDR_RATE, 'should calc the expected ddr rate sigma')
+    t.same(ddrRateSigma, EXPECTED_DDR_RATE, 'should calc the expected ddr rate sigma')
   }
 })
 

@@ -5,6 +5,7 @@
 import {
   timer,
   Subject,
+  lastValueFrom,
 }                   from 'rxjs'
 import {
   tap,
@@ -106,7 +107,7 @@ async function action (
     ].join('\n'))
   }
 
-  const gameOver$ = new Subject()
+  const gameOver$ = new Subject<void>()
   const checkGameOver = (state: State) => {
     // console.info('checkGameOver:', state)
     if (state.timer < 0) {
@@ -129,7 +130,7 @@ async function action (
   )
 
   try {
-    const state = await game$.toPromise()
+    const state = await lastValueFrom(game$)
 
     const gameOver = `Game Over
 

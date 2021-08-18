@@ -18,7 +18,7 @@
     "start": "npm run example",
     "test": "npm run lint && npm run test:unit",
     "test:pack": "bash -x scripts/npm-pack-testing.sh",
-    "test:unit": "blue-tape -r ts-node/register \"src/**/*.spec.ts\" \"src/*.spec.ts\" \"tests/*.spec.ts\" \"tests/**/*.spec.ts\"",
+    "test:unit": "tap --node-arg=--require=ts-node/register \"src/**/*.spec.ts\" \"src/*.spec.ts\" \"tests/*.spec.ts\" \"tests/**/*.spec.ts\"",
     "lint:es": "eslint --ignore-pattern tests/fixtures/ '{bin,examples,scripts,src,tests}/**/*.ts'"
   },
   "repository": {
@@ -46,12 +46,13 @@
     "@types/ip": "^1.1.0",
     "@types/json-stringify-safe": "^5.0.0",
     "pkg-jq": "^0.2.4",
+    "rxjs": "^7.3.0",
     "shx": "^0.3.3",
-    "tstest": "^0.4.10",
+    "tstest": "^0.5.16",
     "wechaty": "^0.62.3",
     "wechaty-mocker": "^0.3.4",
     "wechaty-puppet-mock": "^0.28.1",
-    "wechaty-vorpal": "^0.6.12"
+    "wechaty-vorpal": "^0.6.17"
   },
   "dependencies": {
     "cash": "^0.8.0",
@@ -63,12 +64,16 @@
     "utility-types": "^3.10.0"
   },
   "peerDependencies": {
-    "wechaty-vorpal": "*"
+    "rxjs": ">=7.3",
+    "wechaty-vorpal": ">=0.6.17"
   },
   "git": {
     "scripts": {
       "pre-push": "npx git-scripts-pre-push"
     }
+  },
+  "tap": {
+    "check-coverage": false
   },
   "publishConfig": {
     "tag": "next"

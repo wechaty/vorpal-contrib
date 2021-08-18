@@ -60,7 +60,7 @@ async function registerLeaderBoard (
 
   let scoreList = Object.values(scoreBoard)
     .map(v => v.score)
-  scoreList = [...new Set(scoreList)].sort()
+  scoreList = [...new Set(scoreList)].sort((a, b) => b - a)
 
   const ranking = 1 + scoreList.indexOf(score)
 

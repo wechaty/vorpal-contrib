@@ -1,6 +1,6 @@
-import { types } from 'wechaty-plugin-contrib'
+import type { types } from 'wechaty-plugin-contrib'
 
-import { State } from './reducer'
+import type { State } from './reducer.js'
 
 const generateQuestionAnswer = (score: number) => {
   const randomNumber = () => {

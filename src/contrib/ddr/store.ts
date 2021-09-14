@@ -1,11 +1,11 @@
-import { Message } from 'wechaty'
+import type { Message } from 'wechaty'
 
-import { State } from './reducer'
+import type { State } from './reducer.js'
 
 interface DdrStore {
   stateList: State[],
   monitor: {
-    timer?    : NodeJS.Timer,
+    timer?    : ReturnType<typeof setTimeout>,
     timeout?  : number | string,
     interval? : string,
   }
@@ -44,7 +44,7 @@ class Store {
         stateList: [],
       }
     }
-    return klass.memory[id]
+    return klass.memory[id]!
   }
 
   clear (all = false): void {

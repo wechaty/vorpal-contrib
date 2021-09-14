@@ -1,5 +1,5 @@
-import { Contact } from 'wechaty'
-import { CommandContext } from 'wechaty-vorpal'
+import type { Contact } from 'wechaty'
+import type { CommandContext } from 'wechaty-vorpal'
 
 interface ScoreBoard {
   [id: string]: {
@@ -46,8 +46,8 @@ function update (
     }
   }
 
-  if (score > scoreBoard[player.id]?.score) {
-    scoreBoard[player.id].score = score
+  if (score > scoreBoard[player.id]!.score) {
+    scoreBoard[player.id]!.score = score
   }
 }
 
@@ -70,9 +70,10 @@ async function registerLeaderBoard (
     'What do you want to say now?',
   ].join('\n'))
 
-  if (typeof comment === 'string' && comment && comment !== '0') {
+  const playerScore = scoreBoard[player.id]
+  if (playerScore && typeof comment === 'string' && comment && comment !== '0') {
     scoreBoard[player.id] = {
-      ...scoreBoard[player.id],
+      ...playerScore,
       comment,
     }
   }

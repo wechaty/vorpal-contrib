@@ -1,8 +1,8 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env -S node --no-warnings --loader ts-node/esm
 
 import { test } from 'tstest'
 
-import { normalizeRawCommand } from './normalize-raw-command'
+import { normalizeRawCommand } from './normalize-raw-command.js'
 
 test('normalizeRawCommand', async t => {
   const CMD = `

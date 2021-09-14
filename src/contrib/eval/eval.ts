@@ -1,13 +1,13 @@
 import { log } from 'wechaty'
-import {
+import type {
   Args,
   CommandContext,
   Vorpal,
 }                     from 'wechaty-vorpal'
 import safeStringify  from 'json-stringify-safe'
 
-import { asyncEval }            from './async-eval'
-import { normalizeRawCommand }  from './normalize-raw-command'
+import { asyncEval }            from './async-eval.js'
+import { normalizeRawCommand }  from './normalize-raw-command.js'
 
 function Eval () {
   log.verbose('WechatyVorpalContrib', 'Eval()')
@@ -41,12 +41,21 @@ async function evalAction (
       try {
         result = safeStringify(result, null, 2)
       } catch (e) {
-        this.log(e.stack)
+        log.error('WechatyVorpalContrib', 'Eval() safeStringify() rejection %s', e)
+
+        const name = (e as Error).name
+        const message = (e as Error).message
+        const stack = (e as Error).stack
+        this.log([
+          name,
+          message,
+          stack,
+        ].join('\n'))
       }
     }
     this.log(result)
   } catch (e) {
-    this.log(e)
+    this.log(e as any)
   }
 }
 

@@ -1,6 +1,6 @@
 import readPkgUp  from 'read-pkg-up'
 
-import {
+import type {
   Vorpal,
   CommandContext,
   Args,
@@ -9,9 +9,9 @@ import {
   log,
 }            from 'wechaty'
 
-import {
+import type {
   WechatyVorpalConfig,
-}                       from '../config'
+}                       from '../config.js'
 
 interface VersionConfig extends WechatyVorpalConfig {}
 

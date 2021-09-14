@@ -1,20 +1,20 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env -S node --no-warnings --loader ts-node/esm
 
 import { test } from 'tstest'
 
 import { createFixture } from 'wechaty-mocker'
 
-import { Reporter } from './reporter'
-import { DEFAULT_OPTIONS } from './ddr'
-import { Store } from './store'
+import { Reporter } from './reporter.js'
+import { DEFAULT_OPTIONS } from './ddr.js'
+import { Store } from './store.js'
 
 class ReporterTest extends Reporter {
 
-  public get stateList () { return super.stateList }
+  override get stateList () { return super.stateList }
 
-  sum () { return super.sum() }
-  average () { return super.average() }
-  idCounterDict () { return super.idCounterDict() }
+  override sum () { return super.sum() }
+  override average () { return super.average() }
+  override idCounterDict () { return super.idCounterDict() }
 
 }
 

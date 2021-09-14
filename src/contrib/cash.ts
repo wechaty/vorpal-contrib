@@ -1,4 +1,4 @@
-import {
+import type {
   Vorpal,
 }                     from 'wechaty-vorpal'
 import { log } from 'wechaty'

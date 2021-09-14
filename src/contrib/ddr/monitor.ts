@@ -17,27 +17,27 @@ import {
   Message,
   log,
 }                 from 'wechaty'
-import {
+import type {
   EventMessagePayload,
 }                       from 'wechaty-puppet'
 
-import { Reporter } from './reporter'
+import { Reporter } from './reporter.js'
 import {
   toMessage$,
   sameRoom,
   isText,
   isNotSelf,
   toSeconds,
-}                     from './utils'
+}                     from './utils.js'
 import {
   nextState,
   initialState,
   State,
-}                   from './reducer'
-import {
+}                   from './reducer.js'
+import type {
   DdrOptions,
-}                   from './ddr'
-import { Store }    from './store'
+}                   from './ddr.js'
+import { Store }    from './store.js'
 
 class Monitor {
 

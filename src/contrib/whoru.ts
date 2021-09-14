@@ -4,7 +4,7 @@ import ip from 'ip'
 import publicIp from 'public-ip'
 import readPkgUp  from 'read-pkg-up'
 
-import {
+import type {
   Vorpal,
   CommandContext,
   Args,
@@ -15,9 +15,9 @@ import {
 import moment from 'moment'
 import { VERSION as WECHATY_PUPPET_VERSION } from 'wechaty-puppet'
 
-import {
+import type {
   WechatyVorpalConfig,
-}                       from '../config'
+}                       from '../config.js'
 
 interface WhoruConfig extends WechatyVorpalConfig {}
 

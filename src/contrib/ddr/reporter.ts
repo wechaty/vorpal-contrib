@@ -4,12 +4,12 @@ import {
   State,
   Record,
   initialState,
-}                   from './reducer'
-import { Monitor } from './monitor'
-import { Message } from 'wechaty'
+}                   from './reducer.js'
+import type { Monitor } from './monitor.js'
+import type { Message } from 'wechaty'
 
-import { DdrOptions } from './ddr'
-import { Store }      from './store'
+import type { DdrOptions } from './ddr.js'
+import { Store }      from './store.js'
 
 class Reporter {
 
@@ -48,7 +48,7 @@ class Reporter {
   protected describeDdr (state: State): string {
     const ddrRate = this.ddrRateDict()
 
-    const sortRecord = (a: Record, b: Record) => ddrRate[b.id] - ddrRate[a.id]
+    const sortRecord = (a: Record, b: Record) => ddrRate[b.id]! - ddrRate[a.id]!
     let rank = 0
 
     const board = Object.values(state.payload)
@@ -80,7 +80,7 @@ class Reporter {
       Object.keys(state.payload).forEach(id => {
         if (typeof id !== 'string') { return }
         dict[id] = id in dict
-          ? dict[id] + 1
+          ? dict[id]! + 1
           : 1
       })
       return dict
@@ -98,7 +98,7 @@ class Reporter {
           [record.id]: {
             ...record,
             time: record.id in state.payload
-              ? record.time + state.payload[record.id].time
+              ? record.time + state.payload[record.id]!.time
               : record.time,
           },
         },

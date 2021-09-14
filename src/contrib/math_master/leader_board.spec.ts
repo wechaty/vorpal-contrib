@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env -S node --no-warnings --loader ts-node/esm
 
 import {
   test,
@@ -7,9 +7,9 @@ import {
 import {
   registerLeaderBoard,
   reportLeaderBoard,
-}                         from './leader_board'
-import { CommandContext } from 'wechaty-vorpal'
-import { Contact } from 'wechaty'
+}                         from './leader_board.js'
+import type { CommandContext } from 'wechaty-vorpal'
+import type { Contact } from 'wechaty'
 
 test('leaderBoard', async t => {
   const ID_LIST      = ['id1', 'id2', 'id3']
@@ -32,14 +32,14 @@ test('leaderBoard', async t => {
     await registerLeaderBoard(
       context,
       player,
-      SCORE_LIST[i]
+      SCORE_LIST[i]!,
     )
 
     resultList[i] = await reportLeaderBoard()
   }
 
-  t.ok(resultList[0].includes('name1(3) hello'), 'should get result 0')
-  t.ok(resultList[1].includes('name1(3) hello\n#2 - name2(1) damn'), 'should get result 1')
-  t.ok(resultList[2].includes('name1(3) hello\n#2 - name3(2) \n#3 - name2(1) damn'), 'should get result 2')
+  t.ok(resultList[0]!.includes('name1(3) hello'), 'should get result 0')
+  t.ok(resultList[1]!.includes('name1(3) hello\n#2 - name2(1) damn'), 'should get result 1')
+  t.ok(resultList[2]!.includes('name1(3) hello\n#2 - name3(2) \n#3 - name2(1) damn'), 'should get result 2')
   // console.info(resultList[2])
 })

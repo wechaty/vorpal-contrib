@@ -1,8 +1,8 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env -S node --no-warnings --loader ts-node/esm
 
 import { test } from 'tstest'
 
-import { asyncEval } from './async-eval'
+import { asyncEval } from './async-eval.js'
 
 test('asyncEval resolve for `this`', async function (t) {
   const THIS = {} as any

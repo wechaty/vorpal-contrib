@@ -3,7 +3,7 @@ import {
   UrlLink as WechatyUrlLink,
   UrlLinkPayload,
 }                 from 'wechaty'
-import {
+import type {
   Vorpal,
   CommandContext,
   Args,
@@ -32,9 +32,9 @@ async function urlLinkAction (
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'urlLinkAction("%s")', JSON.stringify(args))
 
-  const url: string = Array.isArray(args.url)
-    ? args.url[0]
-    : args.url
+  const url: string = Array.isArray(args['url'])
+    ? args['url'][0]!
+    : args['url']!
   const options: UrlLinkOptions = args.options
 
   const urlLink = await WechatyUrlLink.create(url)

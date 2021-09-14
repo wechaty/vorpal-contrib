@@ -5,7 +5,7 @@ import {
   Args,
 }                           from 'wechaty-vorpal'
 
-import { regexFromString } from '../utils/regex-from-string'
+import { regexFromString } from '../utils/regex-from-string.js'
 
 function Find () {
   log.verbose('WechatyVorpalContrib', 'Find()')

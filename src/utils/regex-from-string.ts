@@ -2,7 +2,7 @@
 function regexFromString (str: string): RegExp {
   const match = /^\/(.*)\/([a-z]*)$/.exec(str)
   if (match) {
-    return new RegExp(match[1], match[2])
+    return new RegExp(match[1]!, match[2]!)
   } else {
     return new RegExp(str)
   }

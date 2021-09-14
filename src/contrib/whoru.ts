@@ -2,7 +2,6 @@ import os from 'os'
 
 import ip from 'ip'
 import publicIp from 'public-ip'
-import readPkgUp  from 'read-pkg-up'
 
 import type {
   Vorpal,
@@ -18,6 +17,8 @@ import { VERSION as WECHATY_PUPPET_VERSION } from 'wechaty-puppet'
 import type {
   WechatyVorpalConfig,
 }                       from '../config.js'
+
+import { packageJson } from '../package-json.js'
 
 interface WhoruConfig extends WechatyVorpalConfig {}
 
@@ -52,8 +53,6 @@ async function whoruAction (
 
   const options = args.options as any as WhoruOptions
 
-  const pkg = (await readPkgUp())?.packageJson
-
   const wechaty = this.wechaty
   const puppet = wechaty.puppet
 
@@ -68,7 +67,7 @@ async function whoruAction (
   const botAge = moment(bornDate).fromNow()
 
   const reportList = [
-    `This is ${pkg?.name}@${pkg?.version}, ${pkg?.description}`,
+    `This is ${packageJson.name}@${packageJson.version}, ${packageJson.description}`,
     '',
     [
       `I logged in WeChat as ${botName} ${botAge},`,

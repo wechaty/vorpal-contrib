@@ -1,5 +1,3 @@
-import readPkgUp  from 'read-pkg-up'
-
 import type {
   Vorpal,
   CommandContext,
@@ -12,6 +10,8 @@ import {
 import type {
   WechatyVorpalConfig,
 }                       from '../config.js'
+
+import { packageJson } from '../package-json.js'
 
 interface VersionConfig extends WechatyVorpalConfig {}
 
@@ -44,29 +44,22 @@ async function versionAction (
 
   const options = args.options as any as VersionOptions
 
-  const pkg = (await readPkgUp())?.packageJson
-
-  if (!pkg) {
-    this.stderr.next('readPkgUp: packageJson not found.')
-    return 1
-  }
-
   if (!options.dependencies && !options.devDependencies) {
-    this.stdout.next(pkg.version)
+    this.stdout.next(packageJson.version)
     return 0
   }
 
-  if (options.dependencies && pkg.dependencies) {
+  if (options.dependencies && packageJson.dependencies) {
     this.stdout.next(
-      Object.entries(pkg.dependencies)
+      Object.entries(packageJson.dependencies)
         .map(([name, version]) => `${name}@${version}`)
         .join('\n')
     )
   }
 
-  if (options.devDependencies && pkg.devDependencies) {
+  if (options.devDependencies && packageJson.devDependencies) {
     this.stdout.next(
-      Object.entries(pkg.devDependencies)
+      Object.entries(packageJson.devDependencies)
         .map(([name, version]) => `${name}@${version}`)
         .join('\n')
     )

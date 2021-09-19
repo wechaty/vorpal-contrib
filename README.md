@@ -168,7 +168,22 @@ import { Version } from 'wechaty-vorpal-contrib'
 vorpalExtensionList = [ Version() ]
 ```
 
+## Contributors
+
+[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/0)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/0)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/1)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/1)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/2)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/2)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/3)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/3)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/4)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/4)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/5)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/5)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/6)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/6)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/7)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/7)
+
 ## History
+
+### main (Sep 20, 2021)
+
+1. Enable ESM Modules
 
 ### v0.6 (July 10, 2020)
 
@@ -183,17 +198,6 @@ Init the first version of Wechaty Vorpal Extensions for official Wechaty ChatOps
 1. `Ding` Extension for trigger a `dong` reply
 1. `Eval` Extension for EVAL JavaScript code from the chat window!
 1. `Cash` Extension for Cross-platform Linux commands in pure ES6
-
-## Contributors
-
-[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/0)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/0)
-[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/1)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/1)
-[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/2)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/2)
-[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/3)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/3)
-[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/4)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/4)
-[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/5)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/5)
-[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/6)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/6)
-[![contributor](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/images/7)](https://sourcerer.io/fame/huan/wechaty/wechaty-vorpal-contrib/links/7)
 
 ## Author
 

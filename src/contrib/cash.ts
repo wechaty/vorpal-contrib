@@ -65,9 +65,12 @@ function Cash (commands: CashConfig = CASH_COMMANDS) {
       /**
        * Load Cash Commands
        */
-      const mod = require('cash/dist/commands/' + command)
-      // console.info('mod:', mod.toString())
-      vorpal.use(mod)
+      import('cash/dist/commands/' + command + '.js')
+        .then(mod => {
+          // console.info('mod:', mod.toString())
+          return vorpal.use(mod)
+        })
+        .catch(console.error)
     }
 
   }

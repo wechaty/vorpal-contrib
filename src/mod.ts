@@ -1,35 +1,55 @@
-export {
+import {
   WechatyVorpalConfig,
-}                       from './config'
-export { VERSION }       from './version'
+  VERSION,
+}                       from './config.js'
 
-export {
+import {
   MathMaster,
   MathMasterConfig,
-}                     from './contrib/math_master/mod'
-export {
+}                     from './contrib/math_master/mod.js'
+import {
   Ddr,
   DdrConfig,
-}                     from './contrib/ddr/mod'
-export { Eval }       from './contrib/eval/mod'
+}                     from './contrib/ddr/mod.js'
+import { Eval }       from './contrib/eval/mod.js'
 
-export { Ding }       from './contrib/ding'
-export {
+import { Ding }       from './contrib/ding.js'
+import {
   Cash,
   CashConfig,
-}                     from './contrib/cash'
-export {
+}                     from './contrib/cash.js'
+import {
   UrlLink,
-}                     from './contrib/url_link'
-export {
+}                     from './contrib/url_link.js'
+import {
   Find,
-}                     from './contrib/find'
-export {
+}                     from './contrib/find.js'
+import {
   Announce,
-}                     from './contrib/announce'
-export {
+}                     from './contrib/announce.js'
+import {
   Whoru,
-}                     from './contrib/whoru'
-export {
+}                     from './contrib/whoru.js'
+import {
   Version,
-}                     from './contrib/version'
+}                     from './contrib/version.js'
+
+export type {
+  WechatyVorpalConfig,
+  MathMasterConfig,
+  DdrConfig,
+  CashConfig,
+}
+export {
+  VERSION,
+  MathMaster,
+  Ddr,
+  Eval,
+  Ding,
+  Cash,
+  UrlLink,
+  Find,
+  Announce,
+  Whoru,
+  Version,
+}

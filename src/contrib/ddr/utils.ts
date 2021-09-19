@@ -8,7 +8,7 @@ import {
   Message,
   Wechaty,
 }                   from 'wechaty'
-import {
+import type {
   EventMessagePayload,
 }                   from 'wechaty-puppet'
 import moment from 'moment'
@@ -42,11 +42,11 @@ const toSeconds = (text: number | string): number => {
     if (match) {
       if (match[2]) {           // '60s'
         seconds = moment.duration(
-          parseInt(match[1], 10),
+          parseInt(match[1]!, 10),
           match[2] as any,
         ).asSeconds()
       } else {                  // '60'
-        seconds = parseInt(match[1], 10)
+        seconds = parseInt(match[1]!, 10)
       }
     }
   } else {

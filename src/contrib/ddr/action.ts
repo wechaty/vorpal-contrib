@@ -5,18 +5,18 @@
 import {
   log,
 }                       from 'wechaty'
-import {
+import type {
   CommandContext,
   Args,
 }                   from 'wechaty-vorpal'
 
-import { Reporter }   from './reporter'
-import { Monitor }    from './monitor'
+import { Reporter }   from './reporter.js'
+import { Monitor }    from './monitor.js'
 
 import {
   DEFAULT_OPTIONS,
   DdrOptions,
-}                     from './ddr'
+}                     from './ddr.js'
 
 async function action (
   this: CommandContext,
@@ -93,7 +93,14 @@ async function action (
 
   } catch (e) {
     log.error('WechatyVorpalContrib', 'Ddr() ddr$.toPromise() rejection %s', e)
-    console.error(e.stack)
+    const name = (e as Error).name
+    const message = (e as Error).message
+    const stack = (e as Error).stack
+    this.log([
+      name,
+      message,
+      stack,
+    ].join('\n'))
     return 1
   }
 

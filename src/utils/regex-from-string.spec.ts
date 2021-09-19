@@ -1,8 +1,8 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env -S node --no-warnings --loader ts-node/esm
 
 import { test } from 'tstest'
 
-import { regexFromString } from './regex-from-string'
+import { regexFromString } from './regex-from-string.js'
 
 test('regexFromString()', async t => {
   const string = '/hello\\s{0,1}[-_.]{0,1}world|ls\\b/gim'

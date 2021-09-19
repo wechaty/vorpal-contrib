@@ -19,23 +19,23 @@ import {
   log,
   FileBox,
 }                   from 'wechaty'
-import {
+import type {
   CommandContext,
   Args,
 }                   from 'wechaty-vorpal'
 
 import {
   TIMER_MAX,
-}                     from './config'
+}                     from './config.js'
 import {
   State,
   nextState,
   initialGameState,
-}                       from './reducer'
+}                       from './reducer.js'
 import {
   registerLeaderBoard,
   reportLeaderBoard,
-}                       from './leader_board'
+}                       from './leader_board.js'
 
 // interface MathMasterOptions {}
 
@@ -45,7 +45,7 @@ async function action (
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'mathMasterAction("%s")', JSON.stringify(args))
 
-  if (args.options.leaderboard) {
+  if (args.options['leaderboard']) {
     const board = reportLeaderBoard()
     this.stdout.next(board)
     return 0

@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env -S node --no-warnings --loader ts-node/esm
 
 import {
   test,
@@ -10,15 +10,15 @@ import {
 import {
   createFixture,
 }                   from 'wechaty-mocker'
-import {
+import type {
   mock,
 }                   from 'wechaty-puppet-mock'
 import {
   WechatyVorpal,
 }                   from 'wechaty-vorpal'
 
-import { Ddr }      from './ddr'
-import { Store }    from './store'
+import { Ddr }      from './ddr.js'
+import { Store }    from './store.js'
 
 test('ddr', async t => {
   for await (const fixture of createFixture()) {

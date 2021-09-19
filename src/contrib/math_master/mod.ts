@@ -1,4 +1,6 @@
+export type {
+  MathMasterConfig,
+}                     from './math_master.js'
 export {
   MathMaster,
-  MathMasterConfig,
-}                     from './math_master'
+}                     from './math_master.js'

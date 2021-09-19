@@ -1,7 +1,7 @@
 import {
   log,
 }                 from 'wechaty'
-import {
+import type {
   Vorpal,
   CommandContext,
   Args,
@@ -30,7 +30,7 @@ async function announceAction (
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'announceAction("%s")', JSON.stringify(args))
 
-  const announcement: string = args.announcement as string
+  const announcement: string = args['announcement'] as string
   const options = args.options as any as AnnounceOptions
 
   const room = await this.wechaty.Room.find({ id: options.room })

@@ -5,19 +5,19 @@
 import {
   log,
 }                       from 'wechaty'
-import {
+import type {
   Vorpal,
 }                   from 'wechaty-vorpal'
 
-import {
+import type {
   WechatyVorpalConfig,
-}                       from '../../config'
+}                       from '../../config.js'
 
 import {
   DEFAULT_TIMEOUT,
   DEFAULT_NAME,
-}                     from './config'
-import { action }     from './action'
+}                     from './config.js'
+import { action }     from './action.js'
 
 export interface DdrConfig extends WechatyVorpalConfig {}
 

@@ -1,6 +1,6 @@
 import { Vorpal } from 'wechaty-vorpal'
 
-import { Cash }                 from '../src/contrib/cash'
+import { Cash }                 from '../src/contrib/cash.js'
 
 async function main () {
   const vorpal = new Vorpal()

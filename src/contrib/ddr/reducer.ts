@@ -1,7 +1,13 @@
-import { Message } from 'wechaty'
-import {
+import type { Message } from 'wechaty'
+import type {
   DeepReadonly,
 }                 from 'utility-types'
+
+interface Record {
+  id: string,
+  name: string,
+  time: number,
+}
 
 const initialState: DeepReadonly<{
   meta: {
@@ -16,6 +22,11 @@ const initialState: DeepReadonly<{
   },
   payload: {},
 }
+
+// https://stackoverflow.com/a/43001581/1123955
+type DeepWriteable<T> = { -readonly [P in keyof T]: DeepWriteable<T[P]> }
+
+type State = DeepWriteable<typeof initialState>
 
 /**
  * Async reducer: https://stackoverflow.com/a/41243567/1123955
@@ -59,14 +70,9 @@ const nextState = async (stateFuture: Promise<State>, message?: Message): Promis
   return newState
 }
 
-// https://stackoverflow.com/a/43001581/1123955
-type DeepWriteable<T> = { -readonly [P in keyof T]: DeepWriteable<T[P]> }
-
-export type State = DeepWriteable<typeof initialState>
-export interface Record {
-  id: string,
-  name: string,
-  time: number,
+export type {
+  State,
+  Record,
 }
 export {
   nextState,

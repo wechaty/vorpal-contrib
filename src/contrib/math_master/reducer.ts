@@ -1,20 +1,22 @@
-import { ObsIo } from 'wechaty-vorpal'
-import { types } from 'wechaty-plugin-contrib'
+import type { ObsIo } from 'wechaty-vorpal'
+import type { types } from 'wechaty-plugin-contrib'
 
 import {
   generateQuestionAnswer,
   isCorrectAnswer,
-}                           from './question_answer'
+}                           from './question_answer.js'
 import {
   TIMER_MAX,
   SCORE_MAX,
-}               from './config'
+}               from './config.js'
 
 const initialGameState = {
   ...generateQuestionAnswer(0),
   score    : 0,
   timer    : TIMER_MAX,
 }
+
+type State = typeof initialGameState
 
 const nextState = (stdout: ObsIo['stdout']) => (
   state: State,
@@ -49,8 +51,9 @@ const nextState = (stdout: ObsIo['stdout']) => (
   }
 }
 
-export type State = typeof initialGameState
-
+export type {
+  State,
+}
 export {
   initialGameState,
   nextState,

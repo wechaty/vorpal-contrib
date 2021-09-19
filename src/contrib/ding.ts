@@ -1,4 +1,4 @@
-import {
+import type {
   Args,
   CommandContext,
   Vorpal,
@@ -22,7 +22,7 @@ async function dingAction (
   args: Args
 ): Promise<void> {
   log.verbose('WechatyVorpalContrib', 'Ding() dingAction("%s")', JSON.stringify(args))
-  if (args.data && Array.isArray(args.data)) {
+  if (args['data'] && Array.isArray(args['data'])) {
     this.log('dong:' + JSON.stringify(args))
   }
 }

@@ -1,24 +1,33 @@
 {
   "name": "wechaty-vorpal-contrib",
-  "version": "0.6.52",
+  "version": "0.7.2",
   "description": "Wechaty Chat CLI (Command Line Interface), Powered by Vorpal",
-  "main": "dist/src/mod.js",
-  "typings": "dist/src/mod.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/src/mod.js",
+      "require": "./dist/cjs/src/mod.js"
+    }
+  },
+  "typings": "./dist/esm/src/mod.d.ts",
   "engines": {
+    "wechaty": ">=0.69",
+    "node": ">=14",
     "wechaty-vorpal": ">=0.6.1"
   },
   "scripts": {
+    "build": "tsc && tsc -p tsconfig.cjs.json",
     "clean": "shx rm -fr dist/*",
-    "dist": "npm run clean && tsc",
-    "pack": "npm pack",
-    "lint": "npm run lint:es && npm run lint:ts && npm run lint:md",
+    "dist": "npm-run-all clean build dist:commonjs",
+    "dist:commonjs": "jq -n \"{ type: \\\"commonjs\\\" }\" > dist/cjs/package.json",
+    "lint": "npm-run-all lint:es lint:ts lint:md",
     "lint:md": "markdownlint README.md",
-    "lint:ts": "tsc --noEmit",
-    "example": "ts-node examples/ding-dong-bot.ts",
+    "lint:ts": "tsc --isolatedModules --noEmit",
+    "example": "cross-env NODE_OPTIONS=\"--no-warnings --loader=ts-node/esm\" node examples/ding-dong-bot.ts",
     "start": "npm run example",
-    "test": "npm run lint && npm run test:unit",
+    "test": "npm-run-all lint test:unit",
     "test:pack": "bash -x scripts/npm-pack-testing.sh",
-    "test:unit": "tap --node-arg=--require=ts-node/register \"src/**/*.spec.ts\" \"src/*.spec.ts\" \"tests/*.spec.ts\" \"tests/**/*.spec.ts\"",
+    "test:unit": "cross-env NODE_OPTIONS=\"--no-warnings --loader=ts-node/esm\" tap \"src/**/*.spec.ts\" \"tests/**/*.spec.ts\"",
     "lint:es": "eslint --ignore-pattern tests/fixtures/ '{bin,examples,scripts,src,tests}/**/*.ts'"
   },
   "repository": {
@@ -39,34 +48,38 @@
   },
   "homepage": "https://github.com/wechaty/wechaty-vorpal-contrib#readme",
   "devDependencies": {
-    "@chatie/eslint-config": "^0.12.1",
+    "@chatie/eslint-config": "^0.14.1",
     "@chatie/git-scripts": "^0.6.2",
     "@chatie/semver": "^0.4.7",
-    "@chatie/tsconfig": "^0.16.2",
+    "@chatie/tsconfig": "^0.20.2",
     "@types/ip": "^1.1.0",
     "@types/json-stringify-safe": "^5.0.0",
-    "pkg-jq": "^0.2.4",
+    "cross-env": "^7.0.3",
+    "npm-run-all": "^4.1.5",
+    "pkg-jq": "^0.2.11",
     "rxjs": "^7.3.0",
     "shx": "^0.3.3",
     "tstest": "^0.5.16",
-    "wechaty": "^0.62.3",
-    "wechaty-mocker": "^0.3.4",
-    "wechaty-puppet-mock": "^0.28.1",
-    "wechaty-vorpal": "^0.6.17"
+    "wechaty": "^0.69.50",
+    "wechaty-mocker": "^0.9.1",
+    "wechaty-puppet-mock": "^0.31.5"
+  },
+  "peerDependencies": {
+    "wechaty-vorpal": "^0.7.4"
   },
   "dependencies": {
     "cash": "^0.8.0",
     "ip": "^1.1.5",
     "json-stringify-safe": "^5.0.1",
     "moment": "^2.29.1",
-    "public-ip": "^4.0.2",
-    "read-pkg-up": "^7.0.1",
+    "public-ip": "^4.0.4",
     "utility-types": "^3.10.0"
   },
-  "peerDependencies": {
-    "rxjs": ">=7.3",
-    "wechaty-vorpal": ">=0.6.17"
-  },
+  "files": [
+    "bin/",
+    "dist/",
+    "src/"
+  ],
   "git": {
     "scripts": {
       "pre-push": "npx git-scripts-pre-push"

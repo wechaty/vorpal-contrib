@@ -5,15 +5,15 @@
 import {
   log,
 }                   from 'wechaty'
-import {
+import type {
   Vorpal,
 }                   from 'wechaty-vorpal'
 
-import {
+import type {
   WechatyVorpalConfig,
-}                       from '../../config'
+}                       from '../../config.js'
 
-import { action }       from './action'
+import { action }       from './action.js'
 
 export interface MathMasterConfig extends WechatyVorpalConfig {}
 

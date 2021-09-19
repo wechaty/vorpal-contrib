@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env -S node --no-warnings --loader ts-node/esm
 
 import {
   test,
@@ -16,7 +16,7 @@ import {
   WechatyVorpal,
 }                   from 'wechaty-vorpal'
 
-import { MathMaster } from './math_master'
+import { MathMaster } from './math_master.js'
 
 test('math_master', async t => {
   /**
@@ -41,7 +41,7 @@ test('math_master', async t => {
    */
   await wechaty.start()
 
-  const [bot, player] = mocker.createContacts(2)
+  const [bot, player] = mocker.createContacts(2) as [mock.ContactMock, mock.ContactMock]
   mocker.login(bot)
 
   /**
@@ -57,7 +57,7 @@ test('math_master', async t => {
     const MATH_RE = /(\d+) \+ (\d+) = \?/
     const match = text?.match(MATH_RE)
     if (match) {
-      const result = parseInt(match[1], 10) + parseInt(match[2], 10)
+      const result = parseInt(match[1]!, 10) + parseInt(match[2]!, 10)
 
       // const timeout = match[1].length * 1000
       // console.info('timeout:', timeout)
@@ -115,7 +115,7 @@ function expectGameScore (player: mock.ContactMock) {
 
       const match = text.match(/score is: (\d+)!/i)
       if (match) {
-        const n = parseInt(match[1], 10)
+        const n = parseInt(match[1]!, 10)
         resolve(n)
       } else {
         resolve(0)

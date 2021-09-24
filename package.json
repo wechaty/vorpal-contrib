@@ -60,7 +60,7 @@
     "rxjs": "^7.3.0",
     "shx": "^0.3.3",
     "tstest": "^0.5.16",
-    "wechaty": "^0.69.50",
+    "wechaty": "^0.71.4",
     "wechaty-mocker": "^0.9.1",
     "wechaty-puppet-mock": "^0.31.5"
   },

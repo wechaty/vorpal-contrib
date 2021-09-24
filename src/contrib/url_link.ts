@@ -1,6 +1,5 @@
 import {
   log,
-  UrlLink as WechatyUrlLink,
   UrlLinkPayload,
 }                 from 'wechaty'
 import type {
@@ -37,7 +36,7 @@ async function urlLinkAction (
     : args['url']!
   const options: UrlLinkOptions = args.options
 
-  const urlLink = await WechatyUrlLink.create(url)
+  const urlLink = await this.wechaty.UrlLink.create(url)
 
   if (options.description) {
     urlLink.payload.description = options.description

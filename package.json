@@ -59,7 +59,7 @@
     "pkg-jq": "^0.2.11",
     "rxjs": "^7.3.0",
     "shx": "^0.3.3",
-    "wechaty": "^0.73.6",
+    "wechaty": "^0.75.5",
     "tstest": "^0.7.2",
     "wechaty-mocker": "^0.9.1",
     "wechaty-puppet-mock": "^0.31.5"

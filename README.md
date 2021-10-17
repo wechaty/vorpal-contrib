@@ -12,9 +12,10 @@ Wechaty Vorpal Chat CLI (Command Line Interface)
 
 ## Requirements
 
-1. Node.js v12+
-1. [Wechaty](https://github.com/wechaty/wechaty) v0.40+
-1. [WechatyVorpal](https://github.com/wechaty/wechaty-vorpal) v0.2+
+1. Node.js v16+
+2. NPM v7+
+3. [Wechaty](https://github.com/wechaty/wechaty) v0.40+
+4. [WechatyVorpal](https://github.com/wechaty/wechaty-vorpal) v0.2+
 
 ## Usage
 

@@ -12,6 +12,7 @@ import {
   filter,
   takeLast,
   tap,
+// eslint-disable-next-line import/extensions
 }               from 'rxjs/operators'
 import {
   Message,
@@ -79,9 +80,10 @@ class Monitor {
       filter(isText(this.options.dong)),
     )
 
-    const ding = async (v: undefined | Message) => {
+    const ding = (v: undefined | Message) => {
       if (typeof v === 'undefined') {
-        await this.message.say(this.options.ding)
+        this.message.say(this.options.ding)
+          .catch(console.error)
       }
     }
 
@@ -160,7 +162,7 @@ class Monitor {
           takeUntil(timeout$),
           takeLast(1),
         )
-      })
+      }),
     )
 
     return state$
@@ -197,7 +199,7 @@ class Monitor {
       log.verbose('Monitor', 'start() interval "%s" resolved to %s seconds', interval, intervalSeconds)
 
       store.timer = setInterval(
-        async () => { await this.ddr() },
+        () => { this.ddr().catch(console.error) },
         intervalSeconds * 1000,
       )
 

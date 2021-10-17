@@ -43,16 +43,12 @@ type CashCommand = ArrayElement<typeof CASH_COMMANDS>
 export type CashConfig = Readonly<CashCommand[]>
 
 function Cash (commands: CashConfig = CASH_COMMANDS) {
-  log.verbose('WechatyVorpalContrib', 'Cash(%s)',
-    commands
-      ? commands.join(',')
-      : '',
-  )
+  log.verbose('WechatyVorpalContrib', 'Cash(%s)', commands.join(','))
 
   return function CashExtension (vorpal: Vorpal) {
     log.verbose('WechatyVorpalContrib', 'CashExtension(vorpal)')
 
-    if (!commands) { return }
+    // if (!commands) { return }
 
     // Cash workaround
     if (!('api' in vorpal)) {

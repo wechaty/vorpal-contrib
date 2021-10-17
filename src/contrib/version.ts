@@ -38,7 +38,7 @@ interface VersionOptions {
 
 async function versionAction (
   this: CommandContext,
-  args: Args
+  args: Args,
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'versionAction("%s")', JSON.stringify(args))
 
@@ -53,7 +53,7 @@ async function versionAction (
     this.stdout.next(
       Object.entries(packageJson.dependencies)
         .map(([name, version]) => `${name}@${version}`)
-        .join('\n')
+        .join('\n'),
     )
   }
 
@@ -61,7 +61,7 @@ async function versionAction (
     this.stdout.next(
       Object.entries(packageJson.devDependencies)
         .map(([name, version]) => `${name}@${version}`)
-        .join('\n')
+        .join('\n'),
     )
   }
 

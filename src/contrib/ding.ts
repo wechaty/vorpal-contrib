@@ -19,7 +19,7 @@ function Ding () {
 
 async function dingAction (
   this: CommandContext,
-  args: Args
+  args: Args,
 ): Promise<void> {
   log.verbose('WechatyVorpalContrib', 'Ding() dingAction("%s")', JSON.stringify(args))
   if (args['data'] && Array.isArray(args['data'])) {

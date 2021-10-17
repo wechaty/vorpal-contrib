@@ -47,7 +47,7 @@ interface WhoruOptions {
 
 async function whoruAction (
   this: CommandContext,
-  args: Args
+  args: Args,
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'whoruAction("%s")', JSON.stringify(args))
 
@@ -89,8 +89,8 @@ async function whoruAction (
 
     const osTotalmemMb = Number(
       Math.floor(
-        osTotalmem / 1024 / 1024
-      )
+        osTotalmem / 1024 / 1024,
+      ),
     ).toLocaleString()
 
     reportList.push(

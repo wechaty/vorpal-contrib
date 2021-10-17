@@ -3,6 +3,7 @@ import {
 }                   from 'rxjs'
 import {
   mapTo,
+  // eslint-disable-next-line import/extensions
 }                   from 'rxjs/operators'
 import {
   Message,
@@ -16,7 +17,7 @@ import moment from 'moment'
 const toMessage$ = (wechaty: Wechaty) => (payload: EventMessagePayload) => {
   const message = wechaty.Message.load(payload.messageId)
   return from(
-    message.ready()
+    message.ready(),
   ).pipe(
     mapTo(message),
   )
@@ -31,7 +32,7 @@ const isText = (textList: string | string[]) => (message: Message) => {
 
   return textList.some(text => message.type() === Message.Type.Text
     ? message.text() === text
-    : false
+    : false,
   )
 }
 

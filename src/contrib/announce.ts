@@ -26,7 +26,7 @@ interface AnnounceOptions {
 
 async function announceAction (
   this: CommandContext,
-  args: Args
+  args: Args,
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'announceAction("%s")', JSON.stringify(args))
 

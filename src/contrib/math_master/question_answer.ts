@@ -17,7 +17,7 @@ const generateQuestionAnswer = (score: number) => {
   }
 }
 
-const isCorrectAnswer = ({ answer }: State) => (msg: types.SayableMessage) => {
+const isCorrectAnswer = ({ answer }: State) => (msg: types.TalkerMessage) => {
   if (typeof msg === 'string') {
     return parseInt(msg.trim(), 10) === answer
   }

@@ -14,6 +14,7 @@ import {
   switchMap,
   takeUntil,
   startWith,
+  // eslint-disable-next-line import/extensions
 }                   from 'rxjs/operators'
 import {
   log,
@@ -41,7 +42,7 @@ import {
 
 async function action (
   this: CommandContext,
-  args: Args
+  args: Args,
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'mathMasterAction("%s")', JSON.stringify(args))
 

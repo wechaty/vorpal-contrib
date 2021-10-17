@@ -20,7 +20,7 @@ type State = typeof initialGameState
 
 const nextState = (stdout: ObsIo['stdout']) => (
   state: State,
-  value: types.SayableMessage,
+  value: types.TalkerMessage,
 ): State => {
   if (typeof value !== 'string') {
     return state

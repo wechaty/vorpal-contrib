@@ -154,7 +154,7 @@ class Reporter {
     // console.info('removeNum', removeNum)
 
     let idCounterList = Object.entries(this.idCounterDict()).sort(
-      (a: any, b: any) => a[1] - b[1]
+      (a: any, b: any) => a[1] - b[1],
     )
 
     idCounterList = idCounterList.slice(removeNum, 0 - removeNum)
@@ -166,7 +166,7 @@ class Reporter {
     const expectedDongNum = (botNum - 2 * removeNum) * totalDingNum
 
     const actualDongNum = idCounterList.map(ic => ic[1])
-      .reduce((acc, cur) => acc + (cur ?? 0), 0)
+      .reduce((acc, cur) => acc + cur, 0)
     // console.info('expectedDongNum', expectedDongNum)
 
     if (expectedDongNum <= 0) {
@@ -184,7 +184,7 @@ class Reporter {
     // console.info('botNum', botNum)
 
     const expectedDongNum = botNum * totalDingNum
-    const actualDongNum = Object.values(this.idCounterDict()).reduce((acc, cur) => acc + (cur ?? 0), 0)
+    const actualDongNum = Object.values(this.idCounterDict()).reduce((acc, cur) => acc + cur, 0)
     // console.info('expectedDongNum', expectedDongNum)
 
     if (expectedDongNum <= 0) {

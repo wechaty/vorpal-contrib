@@ -20,7 +20,7 @@ import {
 
 async function action (
   this: CommandContext,
-  args: Args
+  args: Args,
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'ddrAction("%s")', JSON.stringify(args))
 

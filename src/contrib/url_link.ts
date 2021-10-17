@@ -27,7 +27,7 @@ type UrlLinkOptions = Partial<UrlLinkPayload>
 
 async function urlLinkAction (
   this: CommandContext,
-  args: Args
+  args: Args,
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'urlLinkAction("%s")', JSON.stringify(args))
 

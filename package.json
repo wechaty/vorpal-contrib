@@ -11,9 +11,9 @@
   },
   "typings": "./dist/esm/src/mod.d.ts",
   "engines": {
-    "wechaty": ">=0.69",
-    "node": ">=14",
-    "wechaty-vorpal": ">=0.6.1"
+    "wechaty": ">=0.77",
+    "node": ">=16",
+    "npm": ">=7"
   },
   "scripts": {
     "build": "tsc && tsc -p tsconfig.cjs.json",
@@ -48,24 +48,22 @@
   },
   "homepage": "https://github.com/wechaty/wechaty-vorpal-contrib#readme",
   "devDependencies": {
-    "@chatie/eslint-config": "^0.14.1",
+    "@chatie/eslint-config": "^0.16.2",
     "@chatie/git-scripts": "^0.6.2",
     "@chatie/semver": "^0.4.7",
-    "@chatie/tsconfig": "^0.20.2",
+    "@chatie/tsconfig": "^0.20.6",
     "@types/ip": "^1.1.0",
     "@types/json-stringify-safe": "^5.0.0",
     "cross-env": "^7.0.3",
     "npm-run-all": "^4.1.5",
     "pkg-jq": "^0.2.11",
-    "rxjs": "^7.3.0",
+    "rxjs": "^7.4.0",
     "shx": "^0.3.3",
-    "tstest": "^0.5.16",
-    "wechaty": "^0.69.50",
-    "wechaty-mocker": "^0.9.1",
-    "wechaty-puppet-mock": "^0.31.5"
-  },
-  "peerDependencies": {
-    "wechaty-vorpal": "^0.7.4"
+    "tstest": "^0.7.3",
+    "wechaty": "^0.77",
+    "wechaty-mocker": "^0.9.2",
+    "wechaty-puppet-mock": "^0.35.8",
+    "wechaty-vorpal": "^0.9.2"
   },
   "dependencies": {
     "cash": "^0.8.0",

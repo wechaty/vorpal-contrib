@@ -30,7 +30,7 @@ interface FindOptions {
 
 async function findAction (
   this: CommandContext,
-  args: Args
+  args: Args,
 ): Promise<number> {
   log.verbose('WechatyVorpalContrib', 'findAction("%s")', JSON.stringify(args))
 
@@ -46,7 +46,7 @@ async function findAction (
     const contactList = await this.message.wechaty.Contact.findAll({ name: re })
     idList.push(
       ...contactList
-        .map(c => c.id)
+        .map(c => c.id),
     )
   }
 
@@ -57,7 +57,7 @@ async function findAction (
 
     const roomList = await this.message.wechaty.Room.findAll({ topic: re })
     idList.push(...roomList
-      .map(r => r.id)
+      .map(r => r.id),
     )
   }
 

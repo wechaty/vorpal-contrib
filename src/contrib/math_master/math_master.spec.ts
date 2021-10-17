@@ -55,7 +55,7 @@ test('math_master', async t => {
     // console.info(`${talker.payload.name}: ${text}`)
 
     const MATH_RE = /(\d+) \+ (\d+) = \?/
-    const match = text?.match(MATH_RE)
+    const match = text.match(MATH_RE)
     if (match) {
       const result = parseInt(match[1]!, 10) + parseInt(match[2]!, 10)
 

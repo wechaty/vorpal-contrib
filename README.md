@@ -182,9 +182,11 @@ vorpalExtensionList = [ Version() ]
 
 ## History
 
-### main (Sep 20, 2021)
+### main v1.0 (Oct 23, 2021)
 
-1. Enable ESM Modules
+Release v1.0 of Wechaty Vorpal Contrib.
+
+1. (Sep 20, 2021): Enable ESM Modules
 
 ### v0.6 (July 10, 2020)
 

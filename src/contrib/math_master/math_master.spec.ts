@@ -5,8 +5,8 @@ import {
 }          from 'tstest'
 
 import {
-  Wechaty,
-  Message,
+  WechatyBuilder,
+  type,
 }                   from 'wechaty'
 import {
   mock,
@@ -24,7 +24,7 @@ test('math_master', async t => {
    */
   const mocker = new mock.Mocker()
   const puppet = new PuppetMock({ mocker })
-  const wechaty = new Wechaty({ puppet })
+  const wechaty = new WechatyBuilder().options({ puppet }).build()
 
   /**
    * Install Vorpal & Match Master Command
@@ -70,13 +70,13 @@ test('math_master', async t => {
 
   }
   const onMessage = (message: mock.MessageMock) => {
-    const type = message.type()
-    switch (type) {
-      case Message.Type.Text:
+    const msgType = message.type()
+    switch (msgType) {
+      case type.Message.Text:
         onMessageText(message)
         break
 
-      case Message.Type.Image:
+      case type.Message.Image:
         // console.info('image message')
         break
 
@@ -109,7 +109,7 @@ test('math_master', async t => {
 function expectGameScore (player: mock.ContactMock) {
   return  new Promise<number>(resolve => {
     const onMessage = (message: mock.MessageMock) => {
-      if (message.type() !== Message.Type.Text) { return }
+      if (message.type() !== type.Message.Text) { return }
       const text = message.text() || ''
       if (!/Game Over/i.test(text))             { return }
 
@@ -129,7 +129,7 @@ function expectGameScore (player: mock.ContactMock) {
 function expectGameBoard (player: mock.ContactMock, bot: mock.ContactMock) {
   return  new Promise<void>(resolve => {
     const onMessage = (message: mock.MessageMock) => {
-      if (message.type() !== Message.Type.Text) { return }
+      if (message.type() !== type.Message.Text) { return }
       const text = message.text() || ''
 
       if (/ say /i.test(text)) {

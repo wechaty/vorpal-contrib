@@ -5,7 +5,7 @@ import {
 }          from 'tstest'
 
 import {
-  Message,
+  type,
 }                   from 'wechaty'
 import {
   createFixture,
@@ -46,7 +46,7 @@ test('ddr', async t => {
      * Message Processing Logic
      */
     const onMessage = (message: mock.MessageMock) => {
-      if (message.type() !== Message.Type.Text) { return }
+      if (message.type() !== type.Message.Text) { return }
       if (message.text() !== 'ding')            { return }
       botList.map(bot => bot.say('dong').to(room))
     }
@@ -74,7 +74,7 @@ test('ddr', async t => {
 function expectSummaryAll (room: mock.RoomMock) {
   return  new Promise<string>(resolve => {
     const onMessage = (message: mock.MessageMock) => {
-      if (message.type() !== Message.Type.Text) { return }
+      if (message.type() !== type.Message.Text) { return }
       const text = message.text() || ''
       if (!/History Summary/i.test(text))       { return }
 

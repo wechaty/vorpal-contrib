@@ -22,7 +22,7 @@ class Store {
   }
 
   protected id (): string {
-    const botId = this.message.wechaty.userSelf().id
+    const botId = this.message.wechaty.currentUser().id
     const talkerId = this.message.talker().id
     const roomId = this.message.room()?.id || ''
 

@@ -6,6 +6,9 @@ import {
   // eslint-disable-next-line import/extensions
 }                   from 'rxjs/operators'
 import {
+  type,
+}                   from 'wechaty'
+import type {
   Message,
   Wechaty,
 }                   from 'wechaty'
@@ -30,7 +33,7 @@ const isText = (textList: string | string[]) => (message: Message) => {
     textList = [textList]
   }
 
-  return textList.some(text => message.type() === Message.Type.Text
+  return textList.some(text => message.type() === type.Message.Text
     ? message.text() === text
     : false,
   )

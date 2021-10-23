@@ -1,6 +1,8 @@
 import {
-  Vorpal,
   log,
+}               from 'wechaty'
+import type {
+  Vorpal,
   CommandContext,
   Args,
 }                           from 'wechaty-vorpal'

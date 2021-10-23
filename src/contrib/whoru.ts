@@ -62,7 +62,7 @@ async function whoruAction (
   const puppetVersion = puppet.version()
   const puppetName = puppet.name()
 
-  const bot = wechaty.userSelf()
+  const bot = wechaty.currentUser()
   const botName = bot.name()
   const botAge = moment(bornDate).fromNow()
 

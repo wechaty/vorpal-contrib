@@ -19,8 +19,8 @@ import {
   log,
 }                 from 'wechaty'
 import type {
-  EventMessagePayload,
-}                       from 'wechaty-puppet'
+  EventMessage,
+}                       from 'wechaty-puppet/payloads'
 
 import { Reporter } from './reporter.js'
 import {
@@ -67,7 +67,7 @@ class Monitor {
   }
 
   ddr$ (): Promise<State> {
-    const wechatyMessage$ = fromEvent<EventMessagePayload>(
+    const wechatyMessage$ = fromEvent<EventMessage>(
       // FIXME(huan): https://github.com/andywer/typed-emitter/issues/9
       this.message.wechaty.puppet as any,
       'message',
@@ -130,7 +130,7 @@ class Monitor {
    *  so there will have a very high probability that we will miss the `dong` message counting.
    */
   passiveState$ () {
-    const wechatyMessage$ = fromEvent<EventMessagePayload>(
+    const wechatyMessage$ = fromEvent<EventMessage>(
       // FIXME(huan): https://github.com/andywer/typed-emitter/issues/9
       this.message.wechaty.puppet as any,
       'message',

@@ -13,11 +13,11 @@ import type {
   Wechaty,
 }                   from 'wechaty'
 import type {
-  EventMessagePayload,
-}                   from 'wechaty-puppet'
+  EventMessage,
+}                   from 'wechaty-puppet/payloads'
 import moment from 'moment'
 
-const toMessage$ = (wechaty: Wechaty) => (payload: EventMessagePayload) => {
+const toMessage$ = (wechaty: Wechaty) => (payload: EventMessage) => {
   const message = wechaty.Message.load(payload.messageId)
   return from(
     message.ready(),

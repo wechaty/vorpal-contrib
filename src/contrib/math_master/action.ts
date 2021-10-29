@@ -18,8 +18,10 @@ import {
 }                   from 'rxjs/operators'
 import {
   log,
-  FileBox,
 }                   from 'wechaty'
+import {
+  FileBox,
+}                   from 'file-box'
 import type {
   CommandContext,
   Args,

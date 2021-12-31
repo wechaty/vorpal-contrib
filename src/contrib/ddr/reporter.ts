@@ -224,7 +224,8 @@ class Reporter {
 
     const lostBotNames = Object.keys(this.idCounterDict())
       .filter(id => !curBotIdSet.has(id))
-      .map(id => this.message.wechaty.Contact.load(id).name())
+      // Huan(202201): FIXME: remove any
+      .map(id => (this.message.wechaty.Contact as any).load(id).name())
       .map(text => `#${--n} ${text}`)
 
     return lostBotNames.length

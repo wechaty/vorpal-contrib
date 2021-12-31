@@ -1,6 +1,6 @@
 import {
   log,
-  payload,
+  payloads,
 }                 from 'wechaty'
 import type {
   Vorpal,
@@ -23,7 +23,7 @@ function UrlLink () {
   }
 }
 
-type UrlLinkOptions = Partial<payload.UrlLink>
+type UrlLinkOptions = Partial<payloads.UrlLink>
 
 async function urlLinkAction (
   this: CommandContext,

@@ -1,12 +1,12 @@
 import {
   from,
 }                   from 'rxjs'
+// import {
+//   mapTo,
+//   // eslint-disable-next-line import/extensions
+// }                   from 'rxjs/operators'
 import {
-  mapTo,
-  // eslint-disable-next-line import/extensions
-}                   from 'rxjs/operators'
-import {
-  type,
+  types,
 }                   from 'wechaty'
 import type {
   Message,
@@ -17,14 +17,10 @@ import type {
 }                   from 'wechaty-puppet/payloads'
 import moment from 'moment'
 
-const toMessage$ = (wechaty: Wechaty) => (payload: EventMessage) => {
-  const message = wechaty.Message.load(payload.messageId)
-  return from(
-    message.ready(),
-  ).pipe(
-    mapTo(message),
-  )
-}
+const toMessage$ = (wechaty: Wechaty) => (payload: EventMessage) => from(
+  // FIXME: Huan(202201): remove `as any`
+  wechaty.Message.find({ id: payload.messageId }) as Promise<Message>,
+)
 
 const sameRoom = (roomMessage: Message) => (message: Message): boolean => !!(roomMessage.room() && roomMessage.room() === message.room())
 const isNotSelf = (message: Message) => !message.self()
@@ -33,7 +29,7 @@ const isText = (textList: string | string[]) => (message: Message) => {
     textList = [textList]
   }
 
-  return textList.some(text => message.type() === type.Message.Text
+  return textList.some(text => message.type() === types.Message.Text
     ? message.text() === text
     : false,
   )
